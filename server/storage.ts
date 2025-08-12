@@ -8,10 +8,9 @@ import {
   companies, users, customers, pets, services, packageTypes, packageTypeServices, customerPackages, 
   customerPackageServices, packageUsages, appointments, notifications
 } from "@shared/schema";
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
 import { eq, and, gte, lte, desc, count, sql, sum, asc } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { db } from "./db";
 
 // Extended interfaces for dashboard data
 export interface DashboardMetrics {
@@ -106,10 +105,6 @@ export interface IStorage {
   getRevenueByService(): Promise<any[]>;
 }
 
-// Initialize database connection
-const sql = neon(process.env.DATABASE_URL!);
-const db = drizzle(sql);
-
 export class DatabaseStorage implements IStorage {
   private companyId: string;
 
@@ -159,16 +154,15 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByEmail(email: string, companyId?: string): Promise<User | undefined> {
     try {
-      let query = db.select()
+      const condition = companyId
+        ? and(eq(users.email, email), eq(users.companyId, companyId))
+        : eq(users.email, email);
+
+      const result = await db.select()
         .from(users)
         .leftJoin(companies, eq(users.companyId, companies.id))
-        .where(eq(users.email, email));
-
-      if (companyId) {
-        query = query.where(and(eq(users.email, email), eq(users.companyId, companyId))) as any;
-      }
-
-      const result = await query.limit(1);
+        .where(condition)
+        .limit(1);
       
       if (result[0]) {
         return {
@@ -254,8 +248,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCustomer(id: string): Promise<boolean> {
-    const result = await db.delete(customers).where(eq(customers.id, id));
-    return result.rowCount > 0;
+    const result = await db
+      .delete(customers)
+      .where(eq(customers.id, id))
+      .returning();
+    return result.length > 0;
   }
 
   // Pets
@@ -265,7 +262,7 @@ export class DatabaseStorage implements IStorage {
 
   async getPets(companyId?: string): Promise<(Pet & { customerName?: string })[]> {
     try {
-      let query = db.select({
+      let query: any = db.select({
         id: pets.id,
         customerId: pets.customerId,
         name: pets.name,
@@ -289,7 +286,7 @@ export class DatabaseStorage implements IStorage {
       if (companyId) {
         query = query.where(eq(customers.companyId, companyId));
       }
-      
+
       const result = await query.orderBy(desc(pets.createdAt));
       return result as (Pet & { customerName?: string })[];
     } catch (error) {
@@ -318,9 +315,9 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async updatePet(id: string, petUpdate: Partial<Pet>): Promise<Pet | null> {
+  async updatePet(id: string, petUpdate: Partial<Pet>): Promise<Pet | undefined> {
     try {
-      const updateData = {
+      const updateData: any = {
         ...petUpdate,
         weight: petUpdate.weight ? parseFloat(petUpdate.weight.toString()) : null,
         birthDate: petUpdate.birthDate ? new Date(petUpdate.birthDate) : null,
@@ -330,10 +327,10 @@ export class DatabaseStorage implements IStorage {
         .set(updateData)
         .where(eq(pets.id, id))
         .returning();
-      return result[0] || null;
+      return result[0];
     } catch (error) {
       console.log('Database error updating pet:', error);
-      return null;
+      return undefined;
     }
   }
 
@@ -605,7 +602,8 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createUser(userData: any): Promise<User> {
+  // Additional user management helper (separate from interface createUser)
+  async createAppUser(userData: any): Promise<User> {
     try {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
@@ -683,7 +681,7 @@ export class DatabaseStorage implements IStorage {
             petName: pet?.name || 'Pet não encontrado',
             serviceName: service?.name || 'Serviço não encontrado',
             servicePrice: service?.basePrice || 0,
-            serviceDuration: service?.estimatedDuration || 0
+            serviceDuration: service?.duration || 0
           };
         })
       );

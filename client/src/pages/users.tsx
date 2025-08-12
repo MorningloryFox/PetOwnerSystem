@@ -20,7 +20,7 @@ import { z } from "zod";
 const createUserSchema = insertUserSchema.extend({
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data: { password: string; confirmPassword: string }) => data.password === data.confirmPassword, {
   message: "Senhas não coincidem",
   path: ["confirmPassword"],
 });

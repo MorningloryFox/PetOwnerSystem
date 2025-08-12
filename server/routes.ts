@@ -353,7 +353,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(pet);
     } catch (error) {
       console.error("Error creating pet:", error);
-      res.status(500).json({ message: "Failed to create pet", error: error.message });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ message: "Failed to create pet", error: message });
     }
   });
 
@@ -486,7 +487,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(packageType);
     } catch (error) {
       console.error("Error creating package type:", error);
-      res.status(500).json({ message: "Failed to create package type", error: error.message });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ message: "Failed to create package type", error: message });
     }
   });
 
@@ -515,7 +517,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(packageType);
     } catch (error) {
       console.error("Error updating package type:", error);
-      res.status(500).json({ message: "Failed to update package type", error: error.message });
+      const message = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ message: "Failed to update package type", error: message });
     }
   });
 

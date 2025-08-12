@@ -204,10 +204,11 @@ export function ActivePackages() {
       </Card>
 
       {/* Package Usage Modal */}
-      <PackageUsageModal 
-        open={showUsageModal}
+      <PackageUsageModal
+        isOpen={showUsageModal}
         onOpenChange={setShowUsageModal}
-        package={selectedPackage}
+        packageId={selectedPackage?.id || ""}
+        customerId={selectedPackage?.customerId || ""}
       />
     </>
   );

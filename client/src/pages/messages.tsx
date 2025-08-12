@@ -25,9 +25,14 @@ interface Message {
 
 export default function Messages() {
   const [activeTab, setActiveTab] = useState("all");
-  const [newMessage, setNewMessage] = useState({
+  const [newMessage, setNewMessage] = useState<{
+    customerId: string;
+    type: "whatsapp" | "email" | "sms";
+    subject: string;
+    content: string;
+  }>({
     customerId: "",
-    type: "whatsapp" as const,
+    type: "whatsapp",
     subject: "",
     content: ""
   });

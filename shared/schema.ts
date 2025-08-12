@@ -26,6 +26,7 @@ export const users = pgTable("users", {
   isActive: boolean("is_active").default(true),
   lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => ({
   uniqueEmailPerCompany: index("unique_email_per_company").on(table.email, table.companyId),
 }));
@@ -62,7 +63,9 @@ export const pets = pgTable("pets", {
   specialNeeds: text("special_needs"), // Any special care requirements
   preferredFood: text("preferred_food"), // Preferred pet food brand/type
   notes: text("notes"),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Services table (linked to companies)
@@ -156,8 +159,8 @@ export const notifications = pgTable("notifications", {
 });
 
 // Insert schemas
-export const insertCompanySchema = createInsertSchema(companies).omit({ id: true, createdAt: true });
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, lastLoginAt: true, companyId: true });
+export const insertCompanySchema = createInsertSchema(companies).omit({ id: true, createdAt: true }) as any;
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true, lastLoginAt: true, companyId: true }) as any;
 export const insertCustomerSchema = createInsertSchema(customers, {
   cep: z.union([
     z.string().regex(/^\d{5}-?\d{3}$/, "CEP deve ter formato 00000-000"),
@@ -169,22 +172,24 @@ export const insertCustomerSchema = createInsertSchema(customers, {
     z.literal(""),
     z.undefined()
   ]).optional().transform(val => val === "" || val === undefined ? null : val),
-}).omit({ id: true, createdAt: true, companyId: true });
-export const insertPetSchema = createInsertSchema(pets).omit({ id: true, createdAt: true }).extend({
-  customerId: z.string().min(1, "Cliente é obrigatório"),
-  weight: z.union([z.number(), z.string().transform(v => parseFloat(v))]).optional(),
-});
-export const insertServiceSchema = createInsertSchema(services).omit({ id: true });
+} as any).omit({ id: true, createdAt: true, companyId: true }) as any;
+export const insertPetSchema = createInsertSchema(pets)
+  .omit({ id: true, createdAt: true, updatedAt: true })
+  .extend({
+    customerId: z.string().min(1, "Cliente é obrigatório"),
+    weight: z.union([z.number(), z.string().transform(v => parseFloat(v))]).optional(),
+  } as any) as any;
+export const insertServiceSchema = createInsertSchema(services).omit({ id: true }) as any;
 export const insertPackageTypeSchema = createInsertSchema(packageTypes, {
   price: z.string().min(1, "Preço é obrigatório"),
   validityDays: z.number().min(1, "Validade deve ser maior que 0"),
-}).omit({ id: true });
-export const insertPackageTypeServiceSchema = createInsertSchema(packageTypeServices).omit({ id: true });
-export const insertCustomerPackageSchema = createInsertSchema(customerPackages).omit({ id: true, acquiredAt: true });
-export const insertCustomerPackageServiceSchema = createInsertSchema(customerPackageServices).omit({ id: true });
-export const insertPackageUsageSchema = createInsertSchema(packageUsages).omit({ id: true, usedAt: true });
-export const insertAppointmentSchema = createInsertSchema(appointments).omit({ id: true, createdAt: true });
-export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, sentAt: true, createdAt: true });
+} as any).omit({ id: true }) as any;
+export const insertPackageTypeServiceSchema = createInsertSchema(packageTypeServices).omit({ id: true }) as any;
+export const insertCustomerPackageSchema = createInsertSchema(customerPackages).omit({ id: true, acquiredAt: true }) as any;
+export const insertCustomerPackageServiceSchema = createInsertSchema(customerPackageServices).omit({ id: true }) as any;
+export const insertPackageUsageSchema = createInsertSchema(packageUsages).omit({ id: true, usedAt: true }) as any;
+export const insertAppointmentSchema = createInsertSchema(appointments).omit({ id: true, createdAt: true }) as any;
+export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, sentAt: true, createdAt: true }) as any;
 
 // Types
 export type Company = typeof companies.$inferSelect;
