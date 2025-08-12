@@ -11,13 +11,13 @@ app.use(express.urlencoded({ extended: false }));
 // Configure sessions
 const MemoryStoreSession = MemoryStore(session);
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'gloss-pet-secret-key-2025',
+  secret: process.env.SESSION_SECRET || "gloss-pet-secret-key-2025",
   resave: false,
   saveUninitialized: false,
   store: new MemoryStoreSession({
     checkPeriod: 86400000 // prune expired entries every 24h
   }),
-  cookie: { 
+  cookie: {
     secure: false, // Set to true in production with HTTPS
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true
@@ -54,7 +54,7 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+async function bootstrap() {
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -74,16 +74,25 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
+  return server;
+}
+
+const server = await bootstrap();
+
+if (!process.env.VERCEL) {
+  // In local or traditional server environments, start listening on a port
+  const port = parseInt(process.env.PORT || "5000", 10);
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true
+    },
+    () => {
+      log(`serving on port ${port}`);
+    }
+  );
+}
+
+// On Vercel we export the Express app as the default handler
+export default app;
