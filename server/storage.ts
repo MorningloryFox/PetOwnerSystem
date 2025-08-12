@@ -8,10 +8,9 @@ import {
   companies, users, customers, pets, services, packageTypes, packageTypeServices, customerPackages, 
   customerPackageServices, packageUsages, appointments, notifications
 } from "@shared/schema";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import { eq, and, gte, lte, desc, count, sql, sum, asc } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { db } from "./db";
 
 // Extended interfaces for dashboard data
 export interface DashboardMetrics {
@@ -107,55 +106,14 @@ export interface IStorage {
   getRevenueByService(): Promise<any[]>;
 }
 
-// Initialize database connection
-const client = postgres(process.env.DATABASE_URL!, {
-  ssl: "require",
-  prepare: false,
-});
-const db = drizzle(client);
+// Database operations use shared connection from db.ts
 
 export class DatabaseStorage implements IStorage {
   private companyId: string;
 
   constructor(companyId: string = '550e8400-e29b-41d4-a716-446655440000') {
     this.companyId = companyId;
-    void this.ensureDefaultAdmin();
   }
-
-  private async ensureDefaultAdmin() {
-    try {
-      const companyExists = await db
-        .select()
-        .from(companies)
-        .where(eq(companies.id, this.companyId))
-        .limit(1);
-
-      if (!companyExists[0]) {
-        await db.insert(companies).values({ id: this.companyId, name: 'Gloss Pet' });
-      }
-
-      const adminExists = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, 'admin'))
-        .limit(1);
-
-      if (!adminExists[0]) {
-        const hashedPassword = await bcrypt.hash('admin', 10);
-        await db.insert(users).values({
-          email: 'admin',
-          password: hashedPassword,
-          name: 'Administrador',
-          role: 'admin',
-          companyId: this.companyId,
-        });
-      }
-    } catch (error) {
-      console.error('Error ensuring default admin:', error);
-    }
-  }
-
-  // Seed method removed - data should be seeded via migrations or admin interface
 
   // Companies
   async getCompany(id: string): Promise<Company | undefined> {
