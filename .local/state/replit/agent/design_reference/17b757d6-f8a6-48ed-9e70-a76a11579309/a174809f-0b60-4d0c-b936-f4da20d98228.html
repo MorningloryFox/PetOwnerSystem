@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gloss Pet - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                        },
+                        success: {
+                            50: '#f0fdf4',
+                            500: '#059669',
+                            600: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-gray-50 font-inter antialiased">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-gray-600 bg-opacity-75 lg:hidden hidden z-40"></div>
+
+    <!-- Sidebar -->
+    <div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 z-50">
+        <div class="flex flex-col h-full">
+            <!-- Logo -->
+            <div class="flex items-center px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <!-- Modern pet grooming salon logo with scissors and paw -->
+                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40" alt="Gloss Pet Logo" class="w-8 h-8 rounded-lg">
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Gloss Pet</h1>
+                        <p class="text-xs text-gray-500">Dashboard</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 7l4-4l4 4"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Clientes
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    Pacotes
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h8l1 1v12a2 2 0 01-2 2H7a2 2 0 01-2-2V8l1-1z"></path>
+                    </svg>
+                    Agendamentos
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Relatórios
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                    Mensagens
+                </a>
+            </nav>
+
+            <!-- User Profile -->
+            <div class="px-4 py-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <!-- Professional pet grooming business owner -->
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=40&h=40" alt="User Avatar" class="w-8 h-8 rounded-full">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900" data-mock="true">Marina Silva</p>
+                        <p class="text-xs text-gray-500" data-mock="true">Proprietária</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64 flex flex-col flex-1">
+        <!-- Top Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Mobile menu button -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-gray-600 hover:text-gray-900">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+
+                    <div class="flex items-center space-x-4">
+                        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <button class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                            Novo Cliente
+                        </button>
+                        <button class="px-4 py-2 bg-success-600 text-white text-sm font-medium rounded-lg hover:bg-success-700 transition-colors">
+                            Novo Pacote
+                        </button>
+                        <!-- Notifications -->
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                            </svg>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 py-8 px-4 sm:px-6 lg:px-8">
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- @COMPONENT: MetricCard -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Pacotes Ativos</p>
+                            <p class="text-3xl font-bold text-gray-900" data-bind="metrics.activePackages">127</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+8.2%</span>
+                        <span class="text-gray-500 ml-1">vs mês anterior</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Renovações/Mês</p>
+                            <p class="text-3xl font-bold text-gray-900" data-bind="metrics.renewalsThisMonth">34</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">+12.5%</span>
+                        <span class="text-gray-500 ml-1">vs mês anterior</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Taxa de Churn</p>
+                            <p class="text-3xl font-bold text-gray-900" data-bind="metrics.churnRate">2.1%</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">-0.3%</span>
+                        <span class="text-gray-500 ml-1">vs mês anterior</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Clientes em Risco</p>
+                            <p class="text-3xl font-bold text-gray-900" data-bind="metrics.riskyClients">15</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.732 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-red-600 font-medium">+2</span>
+                        <span class="text-gray-500 ml-1">vs semana anterior</span>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: MetricCard -->
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Action Queue -->
+                <!-- @COMPONENT: ActionQueue -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-semibold text-gray-900">Fila de Ações</h2>
+                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full" data-bind="actionQueue.count">8 pendentes</span>
+                            </div>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            <!-- @MAP: actionQueue.items.map(action => ( -->
+                            <div class="px-6 py-4 hover:bg-gray-50">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <!-- Happy golden retriever at professional grooming salon -->
+                                        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="Pet" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-mock="true">Luna (Golden Retriever)</p>
+                                            <p class="text-sm text-gray-500" data-mock="true">Cliente: Ana Santos • Pacote expira em 3 dias</p>
+                                            <div class="flex items-center mt-1 space-x-2">
+                                                <span class="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">Alta Prioridade</span>
+                                                <span class="text-xs text-gray-400">Último uso: há 15 dias</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors" data-event="click:openWhatsApp">
+                                            WhatsApp
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors" data-event="click:scheduleAppointment">
+                                            Agendar
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 transition-colors" data-event="click:renewPackage">
+                                            Renovar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 hover:bg-gray-50">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <!-- Cute persian cat being groomed professionally -->
+                                        <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="Pet" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-mock="true">Mimi (Persa)</p>
+                                            <p class="text-sm text-gray-500" data-mock="true">Cliente: Carlos Mendes • Saldo: 1 uso restante</p>
+                                            <div class="flex items-center mt-1 space-x-2">
+                                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">Média Prioridade</span>
+                                                <span class="text-xs text-gray-400">Último uso: há 8 dias</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors">
+                                            WhatsApp
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors">
+                                            Agendar
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-purple-700 bg-purple-100 rounded-md hover:bg-purple-200 transition-colors">
+                                            Renovar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="px-6 py-4 hover:bg-gray-50">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <!-- Friendly labrador being bathed at pet grooming salon -->
+                                        <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=60&h=60" alt="Pet" class="w-12 h-12 rounded-full object-cover">
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-mock="true">Thor (Labrador)</p>
+                                            <p class="text-sm text-gray-500" data-mock="true">Cliente: Fernanda Lima • Inativo há 25 dias</p>
+                                            <div class="flex items-center mt-1 space-x-2">
+                                                <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">Baixa Prioridade</span>
+                                                <span class="text-xs text-gray-400">Saldo: 5 usos</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 transition-colors">
+                                            WhatsApp
+                                        </button>
+                                        <button class="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-md hover:bg-blue-200 transition-colors">
+                                            Agendar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                        <div class="px-6 py-4 bg-gray-50 rounded-b-xl">
+                            <button class="text-sm font-medium text-primary-600 hover:text-primary-700" data-event="click:viewAllActions">
+                                Ver todos os 8 itens →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: ActionQueue -->
+
+                <!-- Active Packages -->
+                <!-- @COMPONENT: ActivePackages -->
+                <div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-semibold text-gray-900">Pacotes Ativos</h2>
+                        </div>
+                        <div class="px-6 py-4 space-y-4">
+                            <!-- @MAP: activePackages.map(package => ( -->
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <p class="font-medium text-gray-900" data-mock="true">Pacote Premium</p>
+                                        <p class="text-sm text-gray-500" data-mock="true">Julia Santos</p>
+                                    </div>
+                                    <span class="text-lg font-bold text-gray-900" data-bind="package.price" data-mock="true">R$ 280</span>
+                                </div>
+                                <!-- Progress Bar -->
+                                <div class="mb-3">
+                                    <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="text-gray-600">Usos</span>
+                                        <span class="font-medium" data-bind="package.usage" data-mock="true">3/8</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary-600 h-2 rounded-full" style="width: 37.5%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500" data-bind="package.validUntil" data-mock="true">Válido até 15/02/2024</span>
+                                    <button class="px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-md hover:bg-primary-700 transition-colors" data-event="click:usePackage">
+                                        Usar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <p class="font-medium text-gray-900" data-mock="true">Pacote Básico</p>
+                                        <p class="text-sm text-gray-500" data-mock="true">Roberto Silva</p>
+                                    </div>
+                                    <span class="text-lg font-bold text-gray-900" data-mock="true">R$ 150</span>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="text-gray-600">Usos</span>
+                                        <span class="font-medium" data-mock="true">1/4</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-success-600 h-2 rounded-full" style="width: 25%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-500" data-mock="true">Válido até 28/02/2024</span>
+                                    <button class="px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-md hover:bg-primary-700 transition-colors">
+                                        Usar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="border border-red-200 bg-red-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div>
+                                        <p class="font-medium text-gray-900" data-mock="true">Pacote Completo</p>
+                                        <p class="text-sm text-gray-500" data-mock="true">Maria Oliveira</p>
+                                    </div>
+                                    <span class="text-lg font-bold text-gray-900" data-mock="true">R$ 350</span>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex items-center justify-between text-sm mb-1">
+                                        <span class="text-gray-600">Usos</span>
+                                        <span class="font-medium text-red-600" data-mock="true">9/10</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-red-500 h-2 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-red-600 font-medium" data-mock="true">Expira em 2 dias!</span>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-md hover:bg-primary-700 transition-colors">
+                                            Usar
+                                        </button>
+                                        <button class="px-3 py-1 bg-success-600 text-white text-xs font-medium rounded-md hover:bg-success-700 transition-colors">
+                                            Renovar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                        <div class="px-6 py-4 bg-gray-50 rounded-b-xl">
+                            <button class="text-sm font-medium text-primary-600 hover:text-primary-700">
+                                Ver todos os pacotes →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: ActivePackages -->
+            </div>
+
+            <!-- Recent Activity & Quick Stats -->
+            <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Recent Activity -->
+                <!-- @COMPONENT: RecentActivity -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Atividades Recentes</h2>
+                    </div>
+                    <div class="px-6 py-4 space-y-4">
+                        <!-- @MAP: recentActivities.map(activity => ( -->
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900" data-mock="true"><span class="font-medium">Pacote usado</span> - Luna (Golden Retriever)</p>
+                                <p class="text-xs text-gray-500" data-mock="true">Banho & Tosa • há 2 horas</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900" data-mock="true"><span class="font-medium">Novo cliente</span> - Pedro Henrique</p>
+                                <p class="text-xs text-gray-500" data-mock="true">Cliente e pet Max (Shih Tzu) • há 4 horas</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900" data-mock="true"><span class="font-medium">Pacote renovado</span> - Ana Santos</p>
+                                <p class="text-xs text-gray-500" data-mock="true">Pacote Premium • há 6 horas</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900" data-mock="true"><span class="font-medium">Lembrete enviado</span> - Carlos Mendes</p>
+                                <p class="text-xs text-gray-500" data-mock="true">Saldo baixo no pacote • há 1 dia</p>
+                            </div>
+                        </div>
+                        <!-- @END_MAP )) -->
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: RecentActivity -->
+
+                <!-- Revenue Chart -->
+                <!-- @COMPONENT: RevenueChart -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-900">Receita por Serviço</h2>
+                    </div>
+                    <div class="px-6 py-6">
+                        <!-- Simple visual chart representation -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-blue-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-700">Banho & Tosa</span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900" data-mock="true">R$ 12.340</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-green-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-700">Tosa Higiênica</span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900" data-mock="true">R$ 6.780</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 35%"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-purple-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-700">Corte de Unhas</span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900" data-mock="true">R$ 2.150</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 15%"></div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                                    <span class="text-sm font-medium text-gray-700">Hidratação</span>
+                                </div>
+                                <span class="text-sm font-bold text-gray-900" data-mock="true">R$ 1.890</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-orange-500 h-2 rounded-full" style="width: 12%"></div>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-lg font-bold text-gray-900">Total</span>
+                                <span class="text-lg font-bold text-primary-600" data-mock="true">R$ 23.160</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: RevenueChart -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Package Usage Modal -->
+    <!-- @COMPONENT: PackageUsageModal -->
+    <div id="package-usage-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-900">Registrar Uso do Pacote</h3>
+                    <button class="text-gray-400 hover:text-gray-600" data-event="click:closeModal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="px-6 py-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+                        <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
+                            <span class="text-sm text-gray-900" data-mock="true">Julia Santos</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Pet</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" data-implementation="Should populate from customer's pets">
+                            <option data-mock="true">Luna (Golden Retriever)</option>
+                            <option data-mock="true">Max (Shih Tzu)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Serviço</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" data-implementation="Should populate available services from package">
+                            <option data-mock="true">Banho & Tosa</option>
+                            <option data-mock="true">Tosa Higiênica</option>
+                            <option data-mock="true">Corte de Unhas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Observações (opcional)</label>
+                        <textarea class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" rows="3" placeholder="Notas sobre o atendimento..." data-implementation="Optional notes about the service"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
+                <button class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:closeModal">
+                    Cancelar
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors" data-event="click:confirmUsage" data-implementation="Should validate and register package usage">
+                    Confirmar Uso
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: PackageUsageModal -->
+
+    <!-- Quick Action Modal for post-usage -->
+    <!-- @COMPONENT: PostUsageActionModal -->
+    <div id="post-usage-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Próxima Ação</h3>
+            </div>
+            <div class="px-6 py-6 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h4 class="text-lg font-semibold text-gray-900 mb-2">Uso registrado com sucesso!</h4>
+                <p class="text-sm text-gray-600 mb-6" data-mock="true">Luna agora tem 2 usos restantes no pacote.</p>
+                
+                <div class="space-y-3">
+                    <button class="w-full px-4 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors" data-event="click:scheduleNext" data-implementation="Should open appointment scheduling">
+                        Agendar Próximo Atendimento
+                    </button>
+                    <button class="w-full px-4 py-3 bg-success-600 text-white font-medium rounded-lg hover:bg-success-700 transition-colors" data-event="click:renewPackage" data-implementation="Should initiate package renewal process">
+                        Renovar Pacote Agora
+                    </button>
+                    <button class="w-full px-4 py-3 text-gray-700 bg-gray-100 font-medium rounded-lg hover:bg-gray-200 transition-colors" data-event="click:closeModal">
+                        Continuar Depois
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: PostUsageActionModal -->
+
+    <!-- Mobile Responsive JavaScript -->
+    <script>
+        (() => {
+            // Mobile sidebar toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileSidebar = document.getElementById('mobile-sidebar');
+            const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
+
+            function toggleMobileSidebar() {
+                mobileSidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+            }
+
+            mobileMenuToggle?.addEventListener('click', toggleMobileSidebar);
+            mobileOverlay?.addEventListener('click', toggleMobileSidebar);
+
+            // Modal management
+            const modals = ['package-usage-modal', 'post-usage-modal'];
+            
+            function closeAllModals() {
+                modals.forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            }
+
+            function openModal(modalId) {
+                closeAllModals();
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+
+            // Event delegation for dynamic content
+            document.addEventListener('click', (e) => {
+                const target = e.target;
+                
+                // Package usage buttons
+                if (target.textContent === 'Usar') {
+                    e.preventDefault();
+                    openModal('package-usage-modal');
+                }
+                
+                // Close modal buttons
+                if (target.closest('[data-event="click:closeModal"]')) {
+                    e.preventDefault();
+                    closeAllModals();
+                }
+                
+                // Confirm usage button
+                if (target.closest('[data-event="click:confirmUsage"]')) {
+                    e.preventDefault();
+                    // TODO: Implement package usage confirmation logic
+                    closeAllModals();
+                    setTimeout(() => openModal('post-usage-modal'), 300);
+                }
+
+                // WhatsApp integration buttons
+                if (target.textContent === 'WhatsApp') {
+                    e.preventDefault();
+                    // TODO: Implement WhatsApp API integration
+                    console.log('Opening WhatsApp for customer...');
+                }
+
+                // Schedule appointment buttons
+                if (target.textContent === 'Agendar') {
+                    e.preventDefault();
+                    // TODO: Implement appointment scheduling modal
+                    console.log('Opening appointment scheduler...');
+                }
+
+                // Renew package buttons
+                if (target.textContent === 'Renovar') {
+                    e.preventDefault();
+                    // TODO: Implement package renewal logic
+                    console.log('Initiating package renewal...');
+                }
+            });
+
+            // PWA service worker registration (placeholder)
+            if ('serviceWorker' in navigator) {
+                // TODO: Register service worker for PWA functionality
+                console.log('PWA service worker ready for registration');
+            }
+
+            // Responsive layout adjustments
+            function handleResize() {
+                if (window.innerWidth >= 1024) {
+                    mobileSidebar.classList.remove('-translate-x-full');
+                    mobileOverlay.classList.add('hidden');
+                }
+            }
+
+            window.addEventListener('resize', handleResize);
+
+            // Auto-refresh data simulation (in real app, use websockets or polling)
+            function refreshDashboardData() {
+                // TODO: Implement real-time data updates
+                console.log('Refreshing dashboard data...');
+            }
+
+            // Simulate real-time updates every 30 seconds
+            setInterval(refreshDashboardData, 30000);
+        })();
+    </script>
+</body>
+</html>

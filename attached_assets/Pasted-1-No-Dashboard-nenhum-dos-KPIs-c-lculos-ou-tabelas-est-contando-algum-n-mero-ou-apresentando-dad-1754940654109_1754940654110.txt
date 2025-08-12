@@ -1,0 +1,15 @@
+1. No Dashboard, nenhum dos KPIs, cálculos ou tabelas está contando algum número ou apresentando dados. Revise e corrija.
+2. Na página de Petz, na Aba Clientes, preciso saber quem é o Tutor de cada Pet. Na coluna "Cliente" está vindo a informação "Cliente não identificado" para todos os pets.
+3. Ao clicar em editar um cliente, não aparece os pets vinculados á ele para que eu possa editar. A mesma coisa para pacotes, quero poder editar o pacote do cliente diretamente daqui. 
+4. O sistema não está identificado corretamente o formato de telefone celular com DDD por padrão. Corrija isso.
+5. Na página de pacotes, ao clicar em editar um pacote que já existe, ele abre o formulário pra criar um novo e não tras os dados do pacote existente que eu cliquei, corrija.
+6. na página de pacotes, em baixo, tem 'Pacotes de Clientes', mas a exibição está quebrada, está horrível. Reformule para mostrar o nome do cliente, a lista de pets dele, quantos usos de pacote ele tem e quais serviços ele já consumiu e quantos faltam. No status, deixe ele colorico de acordo com a disponibilidade do pacote.
+7. Na tela de Agendamentos, ao criar um novo agendamento, eu escolho um cliente e um pet, mas até posso escolher um serviço solto, mas ao clicar no cliente, preciso mostrar quantos pacotes ele tem e, serviços disponíveis por pacote. Se estiver zerado, ai posso adicionar um serviço extra avulso ou um pacote e, mostrar na lista de agendamento de quê preciso cobrar isso dele.
+8. Na tela de agendamento, os filtros "Hoje', "Esta Semana", "Pendentes" e "Todos" parecem não funcionar, verifique e corrija.
+9. Na aba relatórios, os indicadores e KPIs não estão pegando e calculando com dados reais da base, verifique e corrija os cálculos. A temática e visão está ótima, é ´so garantir que sejam dados reais.
+10. Na página de envio de mensagens, os botões para navegador no histórico: "Todas", "Enviadas", "Recebidas" e "Falhas" não funcionam para filtrar as mensagens. Por não ter sido desenvolvido ainda, pode colocar um aviso que está em desenvolvimento. A mesma coisa pras ações rápidas dessa mesma página.
+11. No suporte, o envio de e-mail não está funcionando.
+12. Em solicitações, coloque um aviso ao clicar nos botões e no topo de página dizendo que essa função ainda está em desenvolvimento e que será um sistema de feddback do cliente no futuro. 
+13. Na página de usuários, não consigo editar um usuário criado ou apagar ele.
+14. Na pa´gina de funcionários, criei funcionários e gestor para testar acessos criados, mas ao logar não consigo. Dá esse erro: 401: {"error":"usuário ou senha incorretos"}
+15. 

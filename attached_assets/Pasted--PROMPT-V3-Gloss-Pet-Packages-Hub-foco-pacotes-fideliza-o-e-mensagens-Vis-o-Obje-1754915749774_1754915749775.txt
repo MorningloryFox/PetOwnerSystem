@@ -1,0 +1,159 @@
+# PROMPT V3 — “Gloss Pet • Packages Hub” (foco: pacotes, fidelização e mensagens)
+
+## Visão & Objetivo
+
+Construir do zero um **dashboard minimalista para o dono da Gloss Pet** focado em:
+
+* **Gestão de pacotes** (venda/atribuição, saldo, validade, uso, renovação);
+* **Fidelização & recorrência** (KPIs simples e fila de ações);
+* **Mensageria automática** (agendamento manual; enviar: confirmar → chegou → pronto p/ retirada);
+* **Operação simples**: sem calendário complexo; formulários e status rápidos.
+
+> O layout anexado é **referência**, não regra. Priorizar **clareza, poucos cliques, tipografia Inter, espaçamento generoso**, cores neutras + acentos (azul/verde), **dark mode opcional**.
+
+## Integração ao site Gloss Pet
+
+* Domínio/rota: `glosspet.com`
+
+  * Site marketing: Home, Serviços, Pacotes (landing), Depoimentos, Contato/WhatsApp.
+  * **App**: `glosspet.com/app` (login → dashboard).
+* Header unificado com branding, favicon e paleta da marca.
+
+## Stack (sugestão)
+
+* **Next.js 14** (App Router), **React 18**, **Tailwind**, **Chart.js** (ou Recharts).
+* **DB/Auth**: **Supabase** (Postgres + Auth + Storage).
+* **Mensageria**: WhatsApp (Meta Cloud API/Zenvia/Twilio). Fallback: e-mail (Resend).
+* **PWA**: manifest, service worker; instalável no celular.
+
+## Escopo funcional (MVP)
+
+1. **Pacotes**
+
+   * Tipos de pacote (multi-serviço opcional): nome, validade (dias), usos incluídos, preço de referência.
+   * Atribuir/Vender pacote ao cliente (gera saldo e validade).
+   * Registrar **uso** (decrementa saldo; serviço, pet, observação).
+   * **Renovação 1-clique** (clona tipo/validade; linka com pacote anterior).
+2. **Mensagens automáticas (agendamento manual)**
+
+   * **Confirmar** agendamento (link com botões Confirmar/Cancelar).
+   * **Check-in** (pet chegou): “seu pet está na loja”.
+   * **Pronto/Liberação**: “pet pronto para retirada”.
+   * Lembretes de **validade** (D-15/7/3) e **saldo baixo** (faltam 2/1 usos).
+3. **Dashboard do dono**
+
+   * KPIs: **Pacotes ativos**, **Renovações no mês**, **Churn** (expirados sem renovar), **Clientes em risco**.
+   * **Fila de ações** (hoje/semana): quem contatar (expira logo, saldo baixo, inativos).
+4. **Cadastros simples**
+
+   * Clientes (nome, WhatsApp, e-mail), Pets (espécie/raça/peso/obs), Serviços.
+5. **Agendamento simples**
+
+   * Form com data/hora/serviço/pet; status: `scheduled|confirmed|checked_in|in_service|ready|picked_up|canceled`.
+
+## UX (componentes)
+
+* **Header** com título e botões “Novo Cliente” (azul) e “Novo Pacote” (verde).
+* **Cards de métricas** no topo (4 itens).
+* **Abas**: Clientes | Pacotes | Relatórios.
+* **Modais reutilizáveis**: Cliente, Pacote, Confirmar Uso, Associar Cliente, Excluir.
+* **Lista de pacotes** em cards: cliente, preço, validade; barras “usado/total”; botão **Usar**.
+* **Ação rápida** pós-uso: sugerir **agendar próximo** ou **renovar**.
+
+## Dados (resumo do modelo)
+
+* `customers`, `pets`, `services`.
+* `package_types`, `package_type_services` (multi-serviço).
+* `customer_packages` (saldo/validade/status/renovado\_de).
+* `package_usages` (log de usos).
+* `appointments` (manual, com status operacionais).
+* `notifications` (log de envios).
+
+## Regras
+
+* `valid_until = acquired_at + validity_days`.
+* Status pacote: `active`, `consumed`, `expired`, `renewed`.
+* Eventos → mensagens: `scheduled` (confirmar), `checked_in` (chegou), `ready` (pronto).
+* Lembretes: validade D-15/7/3; saldo 2 e 1 usos restantes.
+
+## Relatórios & KPIs (consultas simples)
+
+* Ativos, Renovações no mês, Churn, Clientes em risco (validade ≤15d & saldo>0 ou sem uso ≥Xd).
+* Gráfico “Receita por tipo de serviço” (indicativo, secundário).
+
+## Não-funcionais
+
+* **Minimalismo e velocidade**: TTI < 2,5s em 4G.
+* **Acessibilidade**: contraste AA, foco visível, navegação por teclado.
+* **LGPD**: consentimento de contato, opt-out, retenção mínima.
+* **Segurança**: RLS por usuário (se portal do cliente for ativado), logs de ações, rate-limit de webhooks.
+* **PWA**: funciona offline nas telas já visitadas.
+
+## Entregáveis
+
+* Repositório (README com setup `.env` e migrações).
+* Rotas de API (`/api/confirm`, `/api/cancel`, `/api/notify`, CRUDs).
+* Seeds de serviços e um tipo de pacote.
+* Layout minimalista (Inter, spacing consistente, dark mode opcional).
+* Deploy (Vercel + Supabase) + domínio `glosspet.com`.
+
+## Critérios de aceite
+
+* **Uso do pacote** atualiza saldo e histórico imediatamente.
+* **Renovação 1-clique** cria novo pacote vinculado e registra evento.
+* Disparo das **3 mensagens** com log em `notifications`.
+* **Fila de ações** e KPIs exibem dados corretos com queries documentadas.
+* PWA instalável; app fluido em celular.
+
+## Roadmap pós-MVP
+
+* Portal do cliente (opcional): confirmar/cancelar, ver saldo, reagendar simples.
+* Exportações (CSV), relatórios extras, cupons de renovação.
+* Observabilidade (Sentry) e testes e2e básicos.
+
+---
+
+## Funcionalidades projetadas (lista objetiva)
+
+### Núcleo — Pacotes & Fidelização
+
+* Criar/editar **tipos de pacote** (um ou vários serviços, validade, usos).
+* **Vender/Atribuir** pacote ao cliente (gera saldo e validade).
+* **Registrar uso** (decremento, notas, pet/serviço, atendente).
+* **Renovação 1-clique** (clona parâmetros; vincula ao anterior).
+* **Lembretes automáticos**: validade (15/7/3 dias), saldo baixo (2/1), inatividade.
+* **Fila de ações** (priorização por risco) com botões WhatsApp/Agendar/Renovar.
+* **KPIs**: ativos, renovações no mês, churn, clientes em risco.
+
+### Operacional — Agendamento manual & Status
+
+* Form simples de **agendamento manual** (sem calendário complexo).
+* Status do atendimento: **scheduled → confirmed → checked\_in → in\_service → ready → picked\_up**.
+* **Mensagens automáticas** por status: confirmar, chegou, pronto.
+
+### Cadastros
+
+* **Clientes** (nome, WhatsApp, e-mail), **Pets** (espécie/raça/peso/obs), **Serviços**.
+* Ação rápida: abrir WhatsApp do cliente.
+
+### Relatórios (essenciais)
+
+* Lista de pacotes: **ativos, consumidos, expirados, renovados**.
+* **Receita por serviço** (indicador visual).
+* Exportação CSV (posterior).
+
+### Site Gloss Pet (container do app)
+
+* **Marketing**: Home, Serviços, Pacotes (landing de venda), Depoimentos, Contato/WhatsApp.
+* **CTA** “Acessar Painel” → `/app` (login).
+* SEO básico, performance e responsividade.
+
+### Qualidade & Segurança
+
+* PWA instalável, offline básico.
+* LGPD (consentimento de contato e opt-out).
+* Logs de envio de mensagens e de mudanças de status.
+
+---
+
+Se quiser, eu já transformo esse prompt em **tarefas por sprint** (com estimativas) ou já te entrego um **wire minimalista em Next.js** com dados mockados, no padrão visual que você mandou, pra conectarmos no Supabase depois. Quer que eu gere esse boilerplate?
