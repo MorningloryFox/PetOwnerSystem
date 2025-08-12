@@ -33,45 +33,27 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Auth routes
+    // Auth routes
 
-  app.post("/api/auth/login", async (req, res) => {
-    try {
-      const { email, password } = req.body;
-
-      // Ensure admin user exists
-      if (email === 'admin') {
-        let adminUser = await storage.getUserByEmail('admin');
-        if (!adminUser) {
-          const hashedPassword = await bcrypt.hash('admin', 10);
-          const company = await storage.getCompany('550e8400-e29b-41d4-a716-446655440000')
-          if(company) {
-            adminUser = await storage.createUser({
-              email: 'admin',
-              password: hashedPassword,
-              name: 'Administrador',
-              role: 'admin',
-              companyId: company.id,
-            });
-          }
-        }
-      }
-      
-      // Try to authenticate against database users
+    app.post("/api/auth/login", async (req, res) => {
       try {
-        const user = await storage.getUserByEmail(email);
-        if (user && await bcrypt.compare(password, user.password)) {
-          req.session.user = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            companyId: user.companyId,
-            company: {
-              id: user.companyId,
-              name: 'Gloss Pet', // Could fetch from companies table
-            },
-          };
+        const { email, password } = req.body;
+
+        // Try to authenticate against database users
+        try {
+          const user = await storage.getUserByEmail(email);
+          if (user && await bcrypt.compare(password, user.password)) {
+            req.session.user = {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              role: user.role,
+              companyId: user.companyId,
+              company: {
+                id: user.companyId,
+                name: 'Gloss Pet', // Could fetch from companies table
+              },
+            };
           
           res.json(req.session.user);
           return;
@@ -744,7 +726,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userDataForValidation = { ...req.body };
       const validatedData = insertUserSchema.parse(userDataForValidation);
-      const user = await userStorage.createUser(validatedData);
+        const user = await userStorage.addUser(validatedData);
       res.status(201).json(user);
     } catch (error) {
       console.error("Error creating user:", error);

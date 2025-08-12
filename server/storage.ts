@@ -50,6 +50,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string, companyId?: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  addUser?(userData: any): Promise<User>;
   updateUserLastLogin(id: string): Promise<void>;
 
   // Customers
@@ -118,6 +119,40 @@ export class DatabaseStorage implements IStorage {
 
   constructor(companyId: string = '550e8400-e29b-41d4-a716-446655440000') {
     this.companyId = companyId;
+    void this.ensureDefaultAdmin();
+  }
+
+  private async ensureDefaultAdmin() {
+    try {
+      const companyExists = await db
+        .select()
+        .from(companies)
+        .where(eq(companies.id, this.companyId))
+        .limit(1);
+
+      if (!companyExists[0]) {
+        await db.insert(companies).values({ id: this.companyId, name: 'Gloss Pet' });
+      }
+
+      const adminExists = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, 'admin'))
+        .limit(1);
+
+      if (!adminExists[0]) {
+        const hashedPassword = await bcrypt.hash('admin', 10);
+        await db.insert(users).values({
+          email: 'admin',
+          password: hashedPassword,
+          name: 'Administrador',
+          role: 'admin',
+          companyId: this.companyId,
+        });
+      }
+    } catch (error) {
+      console.error('Error ensuring default admin:', error);
+    }
   }
 
   // Seed method removed - data should be seeded via migrations or admin interface
@@ -608,7 +643,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createUser(userData: any): Promise<User> {
+  async addUser(userData: any): Promise<User> {
     try {
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
