@@ -38,24 +38,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
-      
-      // Simple admin login for demo purposes
-      if (email === 'admin' && password === 'admin') {
-        // Create session for demo user
-        req.session.user = {
-          id: 'demo-admin',
-          email: 'admin',
-          name: 'Administrador',
-          role: 'admin',
-          companyId: '550e8400-e29b-41d4-a716-446655440000',
-          company: {
-            id: '550e8400-e29b-41d4-a716-446655440000',
-            name: 'Gloss Pet',
-          },
-        };
-        
-        res.json(req.session.user);
-        return;
+
+      // Ensure admin user exists
+      if (email === 'admin') {
+        let adminUser = await storage.getUserByEmail('admin');
+        if (!adminUser) {
+          const hashedPassword = await bcrypt.hash('admin', 10);
+          const company = await storage.getCompany('550e8400-e29b-41d4-a716-446655440000')
+          if(company) {
+            adminUser = await storage.createUser({
+              email: 'admin',
+              password: hashedPassword,
+              name: 'Administrador',
+              role: 'admin',
+              companyId: company.id,
+            });
+          }
+        }
       }
       
       // Try to authenticate against database users
