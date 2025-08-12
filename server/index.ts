@@ -2,22 +2,25 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import pg from "pg";
+import connectPgSimple from "connect-pg-simple";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Configure sessions
-const MemoryStoreSession = MemoryStore(session);
+const PgStore = connectPgSimple(session);
 app.use(session({
   secret: process.env.SESSION_SECRET || 'gloss-pet-secret-key-2025',
   resave: false,
   saveUninitialized: false,
-  store: new MemoryStoreSession({
-    checkPeriod: 86400000 // prune expired entries every 24h
+  store: new PgStore({
+    pg,
+    conString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
   }),
-  cookie: { 
+  cookie: {
     secure: false, // Set to true in production with HTTPS
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true
