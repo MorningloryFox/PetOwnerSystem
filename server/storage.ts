@@ -155,17 +155,12 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByEmail(email: string, companyId?: string): Promise<User | undefined> {
     try {
-      let query = db.select()
+      const result = await db.select()
         .from(users)
         .leftJoin(companies, eq(users.companyId, companies.id))
-        .where(eq(users.email, email));
+        .where(companyId ? and(eq(users.email, email), eq(users.companyId, companyId)) : eq(users.email, email))
+        .limit(1);
 
-      if (companyId) {
-        query = query.where(and(eq(users.email, email), eq(users.companyId, companyId))) as any;
-      }
-
-      const result = await query.limit(1);
-      
       if (result[0]) {
         return {
           ...result[0].users,
@@ -249,50 +244,47 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async deleteCustomer(id: string): Promise<boolean> {
-    const result = await db.delete(customers).where(eq(customers.id, id));
-    return result.rowCount > 0;
-  }
+    async deleteCustomer(id: string): Promise<boolean> {
+      const result = await db.delete(customers).where(eq(customers.id, id)).returning();
+      return result.length > 0;
+    }
 
   // Pets
   async getAllPets(): Promise<Pet[]> {
     return await db.select().from(pets);
   }
 
-  async getPets(companyId?: string): Promise<(Pet & { customerName?: string })[]> {
-    try {
-      let query = db.select({
-        id: pets.id,
-        customerId: pets.customerId,
-        name: pets.name,
-        species: pets.species,
-        breed: pets.breed,
-        weight: pets.weight,
-        birthDate: pets.birthDate,
-        gender: pets.gender,
-        color: pets.color,
-        specialNeeds: pets.specialNeeds,
-        preferredFood: pets.preferredFood,
-        notes: pets.notes,
-        imageUrl: pets.imageUrl,
-        createdAt: pets.createdAt,
-        updatedAt: pets.updatedAt,
-        customerName: customers.name,
-      })
-      .from(pets)
-      .leftJoin(customers, eq(pets.customerId, customers.id));
+    async getPets(companyId?: string): Promise<(Pet & { customerName?: string })[]> {
+      try {
+        const baseQuery = db.select({
+          id: pets.id,
+          customerId: pets.customerId,
+          name: pets.name,
+          species: pets.species,
+          breed: pets.breed,
+          weight: pets.weight,
+          birthDate: pets.birthDate,
+          gender: pets.gender,
+          color: pets.color,
+          specialNeeds: pets.specialNeeds,
+          preferredFood: pets.preferredFood,
+          notes: pets.notes,
+          createdAt: pets.createdAt,
+          customerName: customers.name,
+        })
+          .from(pets)
+          .leftJoin(customers, eq(pets.customerId, customers.id));
 
-      if (companyId) {
-        query = query.where(eq(customers.companyId, companyId));
+        const result = companyId
+          ? await baseQuery.where(eq(customers.companyId, companyId)).orderBy(desc(pets.createdAt))
+          : await baseQuery.orderBy(desc(pets.createdAt));
+
+        return result as (Pet & { customerName?: string })[];
+      } catch (error) {
+        console.error('Database error getting pets:', error);
+        return [];
       }
-      
-      const result = await query.orderBy(desc(pets.createdAt));
-      return result as (Pet & { customerName?: string })[];
-    } catch (error) {
-      console.error('Database error getting pets:', error);
-      return [];
     }
-  }
 
   async getPetsByCustomer(customerId: string): Promise<Pet[]> {
     try {
@@ -304,32 +296,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createPet(insertPet: InsertPet): Promise<Pet> {
-    const petData = {
-      ...insertPet,
-      id: undefined, // Let DB generate
-      weight: insertPet.weight ? parseFloat(insertPet.weight.toString()) : null,
-      birthDate: insertPet.birthDate ? new Date(insertPet.birthDate) : null,
-    };
-    const result = await db.insert(pets).values(petData).returning();
+    const result = await db.insert(pets).values(insertPet).returning();
     return result[0];
   }
 
-  async updatePet(id: string, petUpdate: Partial<Pet>): Promise<Pet | null> {
+  async updatePet(id: string, petUpdate: Partial<Pet>): Promise<Pet | undefined> {
     try {
-      const updateData = {
-        ...petUpdate,
-        weight: petUpdate.weight ? parseFloat(petUpdate.weight.toString()) : null,
-        birthDate: petUpdate.birthDate ? new Date(petUpdate.birthDate) : null,
-        updatedAt: new Date(),
-      };
       const result = await db.update(pets)
-        .set(updateData)
+        .set(petUpdate)
         .where(eq(pets.id, id))
         .returning();
-      return result[0] || null;
+      return result[0];
     } catch (error) {
       console.log('Database error updating pet:', error);
-      return null;
+      return undefined;
     }
   }
 
@@ -630,11 +610,11 @@ export class DatabaseStorage implements IStorage {
 
   async toggleUserStatus(userId: string, isActive: boolean): Promise<User> {
     try {
-      const [user] = await db
-        .update(users)
-        .set({ isActive, updatedAt: new Date() })
-        .where(and(eq(users.id, userId), eq(users.companyId, this.companyId)))
-        .returning();
+        const [user] = await db
+          .update(users)
+          .set({ isActive })
+          .where(and(eq(users.id, userId), eq(users.companyId, this.companyId)))
+          .returning();
       
       if (!user) {
         throw new Error('Usuário não encontrado');
@@ -679,8 +659,8 @@ export class DatabaseStorage implements IStorage {
             petName: pet?.name || 'Pet não encontrado',
             serviceName: service?.name || 'Serviço não encontrado',
             servicePrice: service?.basePrice || 0,
-            serviceDuration: service?.estimatedDuration || 0
-          };
+              serviceDuration: service?.duration || 0
+            };
         })
       );
 

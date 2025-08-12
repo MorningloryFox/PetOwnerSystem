@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage, DatabaseStorage } from "./storage";
-import { insertCustomerSchema, insertPetSchema, insertPackageUsageSchema, insertAppointmentSchema, insertCustomerPackageSchema, insertCompanySchema, insertUserSchema } from "@shared/schema";
+import { insertCustomerSchema, insertPackageUsageSchema, insertAppointmentSchema, insertCustomerPackageSchema, insertCompanySchema, insertUserSchema } from "@shared/schema";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import session from "express-session";
@@ -299,17 +299,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Pet routes
-  app.get("/api/pets", requireAuth, async (req, res) => {
-    try {
-      const user = req.session.user!;
-      const pets = await storage.getPets(user.companyId);
-      res.json(pets);
-    } catch (error) {
-      console.error("Error fetching pets:", error);
-      res.status(500).json({ message: "Failed to fetch pets" });
-    }
-  });
-
   app.get("/api/customers/:customerId/pets", async (req, res) => {
     try {
       const pets = await storage.getPetsByCustomer(req.params.customerId);
@@ -318,27 +307,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch pets" });
     }
   });
-
-  app.post("/api/pets", requireAuth, async (req, res) => {
-    try {
-      console.log("Creating pet with data:", req.body);
-      const petData = req.body;
-      
-      // Clean and validate data
-      const cleanData = {
-        ...petData,
-        weight: petData.weight ? parseFloat(petData.weight) : null,
-        birthDate: petData.birthDate || null,
-      };
-      
-      const pet = await storage.createPet(cleanData);
-      res.status(201).json(pet);
-    } catch (error) {
-      console.error("Error creating pet:", error);
-      res.status(500).json({ message: "Failed to create pet", error: error.message });
-    }
-  });
-
   app.patch("/api/pets/:id", requireAuth, async (req, res) => {
     try {
       const updates = req.body;
@@ -365,26 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/pets", requireAuth, async (req, res) => {
     try {
       console.log("Creating pet with data:", req.body);
-      
-      const result = insertPetSchema.omit({ customerId: true }).extend({
-        customerId: z.string().min(1, "Cliente é obrigatório"),
-        birthDate: z.string().optional().nullable(),
-      }).safeParse(req.body);
-      
-      if (!result.success) {
-        console.error("Validation error:", result.error);
-        return res.status(400).json({
-          error: "Dados inválidos",
-          details: result.error.flatten().fieldErrors
-        });
-      }
-
-      const petData = {
-        ...result.data,
-        birthDate: result.data.birthDate ? new Date(result.data.birthDate) : null,
-      };
-
-      const pet = await storage.createPet(petData);
+      const pet = await storage.createPet(req.body);
       console.log("Pet created successfully:", pet);
       res.status(201).json(pet);
     } catch (error) {
@@ -396,26 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/pets/:id", requireAuth, async (req, res) => {
     try {
       console.log("Updating pet with data:", req.body);
-      
-      const result = insertPetSchema.omit({ customerId: true }).extend({
-        customerId: z.string().min(1, "Cliente é obrigatório"),
-        birthDate: z.string().optional().nullable(),
-      }).safeParse(req.body);
-      
-      if (!result.success) {
-        console.error("Validation error:", result.error);
-        return res.status(400).json({
-          error: "Dados inválidos",
-          details: result.error.flatten().fieldErrors
-        });
-      }
-
-      const petData = {
-        ...result.data,
-        birthDate: result.data.birthDate ? new Date(result.data.birthDate) : null,
-      };
-
-      const pet = await storage.updatePet(req.params.id, petData);
+      const pet = await storage.updatePet(req.params.id, req.body);
       if (!pet) {
         return res.status(404).json({ message: "Pet not found" });
       }
@@ -466,11 +396,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const packageType = await storage.createPackageType(packageData);
       console.log("Package type created successfully:", packageType);
       res.status(201).json(packageType);
-    } catch (error) {
-      console.error("Error creating package type:", error);
-      res.status(500).json({ message: "Failed to create package type", error: error.message });
-    }
-  });
+      } catch (error) {
+        console.error("Error creating package type:", error);
+        res.status(500).json({ message: "Failed to create package type", error: (error as Error).message });
+      }
+    });
 
   app.patch("/api/package-types/:id", requireAuth, async (req, res) => {
     try {
@@ -495,11 +425,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       console.log("Package type updated successfully:", packageType);
       res.json(packageType);
-    } catch (error) {
-      console.error("Error updating package type:", error);
-      res.status(500).json({ message: "Failed to update package type", error: error.message });
-    }
-  });
+      } catch (error) {
+        console.error("Error updating package type:", error);
+        res.status(500).json({ message: "Failed to update package type", error: (error as Error).message });
+      }
+    });
 
   app.delete("/api/package-types/:id", requireAuth, async (req, res) => {
     try {
@@ -837,13 +767,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Sending ${type} message to customer ${customerId}: ${content}`);
       
       // Create notification record
-      await storage.createNotification({
-        customerId,
-        type: "manual_message",
-        title: subject || "Nova mensagem",
-        message: content,
-        read: false
-      });
+        await storage.createNotification({
+          customerId,
+          type: "manual_message",
+          message: content,
+          channel: "system"
+        });
 
       res.json({ success: true, message: "Message sent successfully" });
     } catch (error) {
@@ -857,13 +786,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { customerId, message, type } = req.body;
       
       // Create notification record
-      await storage.createNotification({
-        customerId,
-        type: type || "manual",
-        title: "Mensagem WhatsApp",
-        message,
-        read: false
-      });
+        await storage.createNotification({
+          customerId,
+          type: type || "manual",
+          message,
+          channel: "whatsapp"
+        });
 
       res.json({ success: true, message: "Message sent via WhatsApp" });
     } catch (error) {

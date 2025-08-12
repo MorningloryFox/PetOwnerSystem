@@ -158,27 +158,10 @@ export const notifications = pgTable("notifications", {
 // Insert schemas
 export const insertCompanySchema = createInsertSchema(companies).omit({ id: true, createdAt: true });
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, lastLoginAt: true, companyId: true });
-export const insertCustomerSchema = createInsertSchema(customers, {
-  cep: z.union([
-    z.string().regex(/^\d{5}-?\d{3}$/, "CEP deve ter formato 00000-000"),
-    z.literal(""),
-    z.undefined()
-  ]).optional().transform(val => val === "" || val === undefined ? null : val),
-  email: z.union([
-    z.string().email("Email deve ter formato válido"),
-    z.literal(""),
-    z.undefined()
-  ]).optional().transform(val => val === "" || val === undefined ? null : val),
-}).omit({ id: true, createdAt: true, companyId: true });
-export const insertPetSchema = createInsertSchema(pets).omit({ id: true, createdAt: true }).extend({
-  customerId: z.string().min(1, "Cliente é obrigatório"),
-  weight: z.union([z.number(), z.string().transform(v => parseFloat(v))]).optional(),
-});
+export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true, createdAt: true, companyId: true });
+export const insertPetSchema = createInsertSchema(pets).omit({ id: true, createdAt: true });
 export const insertServiceSchema = createInsertSchema(services).omit({ id: true });
-export const insertPackageTypeSchema = createInsertSchema(packageTypes, {
-  price: z.string().min(1, "Preço é obrigatório"),
-  validityDays: z.number().min(1, "Validade deve ser maior que 0"),
-}).omit({ id: true });
+export const insertPackageTypeSchema = createInsertSchema(packageTypes).omit({ id: true });
 export const insertPackageTypeServiceSchema = createInsertSchema(packageTypeServices).omit({ id: true });
 export const insertCustomerPackageSchema = createInsertSchema(customerPackages).omit({ id: true, acquiredAt: true });
 export const insertCustomerPackageServiceSchema = createInsertSchema(customerPackageServices).omit({ id: true });
@@ -188,26 +171,26 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
 
 // Types
 export type Company = typeof companies.$inferSelect;
-export type InsertCompany = z.infer<typeof insertCompanySchema>;
+export type InsertCompany = typeof companies.$inferInsert;
 export type User = typeof users.$inferSelect;
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertUser = typeof users.$inferInsert;
 export type Customer = typeof customers.$inferSelect;
-export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
+export type InsertCustomer = typeof customers.$inferInsert;
 export type Pet = typeof pets.$inferSelect;
-export type InsertPet = z.infer<typeof insertPetSchema>;
+export type InsertPet = typeof pets.$inferInsert;
 export type Service = typeof services.$inferSelect;
-export type InsertService = z.infer<typeof insertServiceSchema>;
+export type InsertService = typeof services.$inferInsert;
 export type PackageType = typeof packageTypes.$inferSelect;
-export type InsertPackageType = z.infer<typeof insertPackageTypeSchema>;
+export type InsertPackageType = typeof packageTypes.$inferInsert;
 export type PackageTypeService = typeof packageTypeServices.$inferSelect;
-export type InsertPackageTypeService = z.infer<typeof insertPackageTypeServiceSchema>;
+export type InsertPackageTypeService = typeof packageTypeServices.$inferInsert;
 export type CustomerPackage = typeof customerPackages.$inferSelect;
-export type InsertCustomerPackage = z.infer<typeof insertCustomerPackageSchema>;
+export type InsertCustomerPackage = typeof customerPackages.$inferInsert;
 export type CustomerPackageService = typeof customerPackageServices.$inferSelect;
-export type InsertCustomerPackageService = z.infer<typeof insertCustomerPackageServiceSchema>;
+export type InsertCustomerPackageService = typeof customerPackageServices.$inferInsert;
 export type PackageUsage = typeof packageUsages.$inferSelect;
-export type InsertPackageUsage = z.infer<typeof insertPackageUsageSchema>;
+export type InsertPackageUsage = typeof packageUsages.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
-export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
+export type InsertAppointment = typeof appointments.$inferInsert;
 export type Notification = typeof notifications.$inferSelect;
-export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type InsertNotification = typeof notifications.$inferInsert;
