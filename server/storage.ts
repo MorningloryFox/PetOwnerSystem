@@ -8,8 +8,7 @@ import {
   companies, users, customers, pets, services, packageTypes, packageTypeServices, customerPackages, 
   customerPackageServices, packageUsages, appointments, notifications
 } from "@shared/schema";
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import { db } from "./db";
 import { eq, and, gte, lte, desc, count, sql, sum, asc } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
@@ -107,8 +106,7 @@ export interface IStorage {
 }
 
 // Initialize database connection
-const sql = neon(process.env.DATABASE_URL!);
-const db = drizzle(sql);
+
 
 export class DatabaseStorage implements IStorage {
   private companyId: string;
