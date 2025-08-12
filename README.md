@@ -95,7 +95,7 @@ PetManager Pro é uma plataforma profissional de gestão para pet shops no Brasi
 ### Backend
 - **Express.js** com TypeScript
 - **Drizzle ORM** para acesso ao banco
-- **PostgreSQL** (Neon Serverless)
+- **PostgreSQL** (Supabase)
 - **bcryptjs** para segurança
 - **Express Session** para autenticação
 
@@ -161,7 +161,7 @@ PetManager Pro é uma plataforma profissional de gestão para pet shops no Brasi
 
 ### Pré-requisitos
 - Node.js 18+
-- PostgreSQL (ou usar o Neon fornecido)
+- PostgreSQL (ou usar o Supabase fornecido)
 - NPM ou Yarn
 
 ### Instalação
@@ -211,7 +211,7 @@ npm run dev
 
 ### DevOps
 - **Replit** - Desenvolvimento e hosting
-- **Neon** - PostgreSQL serverless
+- **Supabase** - Banco PostgreSQL gerenciado
 - **Git** - Controle de versão
 
 ## 📈 Métricas de Performance

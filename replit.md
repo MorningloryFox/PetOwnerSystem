@@ -133,11 +133,11 @@ The API follows a resource-based structure with endpoints for dashboard metrics,
 ### Data Storage Solutions
 The application uses PostgreSQL as the primary database with Drizzle ORM for schema management and queries:
 
-- **Database**: PostgreSQL with Neon serverless hosting
+- **Database**: PostgreSQL with Supabase managed hosting
 - **ORM**: Drizzle ORM with TypeScript integration
 - **Schema**: Comprehensive data model covering users, customers, pets, services, packages, and notifications
 - **Migrations**: Drizzle Kit for database schema migrations
-- **Connection**: Neon serverless database with connection pooling
+- **Connection**: Supabase Postgres connection with pooling
 
 The database schema supports complex package management with relationships between customers, pets, package types, customer packages, and usage tracking.
 
@@ -161,7 +161,7 @@ The application is designed as a Progressive Web App:
 ## External Dependencies
 
 ### Database and Hosting
-- **Neon Database**: Serverless PostgreSQL database with connection pooling
+- **Supabase Database**: Managed PostgreSQL database with connection pooling
 - **Vercel/Replit**: Prepared for deployment on modern hosting platforms
 
 ### UI and Design
