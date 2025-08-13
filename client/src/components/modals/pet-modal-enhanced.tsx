@@ -231,7 +231,7 @@ export function PetModal({ open, onOpenChange, preSelectedCustomerId, pet }: Pet
                   </Select>
                   {form.formState.errors.customerId && (
                     <span className="text-sm text-red-500">
-                      {form.formState.errors.customerId.message}
+                      {String(form.formState.errors.customerId?.message)}
                     </span>
                   )}
                 </div>
@@ -257,7 +257,7 @@ export function PetModal({ open, onOpenChange, preSelectedCustomerId, pet }: Pet
                   />
                   {form.formState.errors.name && (
                     <span className="text-sm text-red-500">
-                      {form.formState.errors.name.message}
+                      {String(form.formState.errors.name?.message)}
                     </span>
                   )}
                 </div>
@@ -282,7 +282,7 @@ export function PetModal({ open, onOpenChange, preSelectedCustomerId, pet }: Pet
                   </Select>
                   {form.formState.errors.species && (
                     <span className="text-sm text-red-500">
-                      {form.formState.errors.species.message}
+                      {String(form.formState.errors.species?.message)}
                     </span>
                   )}
                 </div>

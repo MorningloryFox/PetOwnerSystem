@@ -101,7 +101,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
     const services = form.watch("services");
     if (!services || services.length === 0) return "0.00";
     
-    const total = services.reduce((sum, service) => {
+    const total = services.reduce((sum: number, service: any) => {
       const unitPrice = parseFloat(service.unitPrice || "0");
       const uses = service.includedUses || 0;
       return sum + (unitPrice * uses);
@@ -115,7 +115,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
     const services = form.watch("services");
     if (!services || services.length === 0) return 0;
     
-    return services.reduce((sum, service) => sum + (service.includedUses || 0), 0);
+    return services.reduce((sum: number, service: any) => sum + (service.includedUses || 0), 0);
   };
 
   const addService = () => {
@@ -146,7 +146,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
     }
 
     // Verificar se todos os serviços estão preenchidos
-    const hasInvalidServices = data.services.some(service => 
+    const hasInvalidServices = data.services.some((service: any) =>
       !service.serviceId || !service.unitPrice || service.includedUses <= 0
     );
 
@@ -211,7 +211,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
                   />
                   {form.formState.errors.name && (
                     <span className="text-sm text-red-500">
-                      {form.formState.errors.name.message}
+                      {String(form.formState.errors.name?.message)}
                     </span>
                   )}
                 </div>
@@ -228,7 +228,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
                   />
                   {form.formState.errors.validityDays && (
                     <span className="text-sm text-red-500">
-                      {form.formState.errors.validityDays.message}
+                      {String(form.formState.errors.validityDays?.message)}
                     </span>
                   )}
                 </div>
@@ -302,9 +302,9 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
                               </option>
                             ))}
                           </select>
-                          {form.formState.errors.services?.[index]?.serviceId && (
+                          {(form.formState.errors.services as any)?.[index]?.serviceId && (
                             <span className="text-sm text-red-500">
-                              {form.formState.errors.services[index]?.serviceId?.message}
+                              {String((form.formState.errors.services as any)[index]?.serviceId?.message)}
                             </span>
                           )}
                         </div>
@@ -348,7 +348,7 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
 
               {form.formState.errors.services && (
                 <span className="text-sm text-red-500">
-                  {form.formState.errors.services.message}
+                  {String((form.formState.errors.services as any)?.message)}
                 </span>
               )}
             </CardContent>

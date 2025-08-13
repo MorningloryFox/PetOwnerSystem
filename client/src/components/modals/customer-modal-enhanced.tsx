@@ -297,7 +297,7 @@ export function CustomerModal({ open, onOpenChange, customer }: CustomerModalPro
                 />
                 {form.formState.errors.name && (
                   <span className="text-sm text-red-500">
-                    {form.formState.errors.name.message}
+                    {String(form.formState.errors.name?.message)}
                   </span>
                 )}
               </div>
@@ -313,7 +313,7 @@ export function CustomerModal({ open, onOpenChange, customer }: CustomerModalPro
                 />
                 {form.formState.errors.phone && (
                   <span className="text-sm text-red-500">
-                    {form.formState.errors.phone.message}
+                    {String(form.formState.errors.phone?.message)}
                   </span>
                 )}
               </div>
@@ -330,7 +330,7 @@ export function CustomerModal({ open, onOpenChange, customer }: CustomerModalPro
                 />
                 {form.formState.errors.email && (
                   <span className="text-sm text-red-500">
-                    {form.formState.errors.email.message}
+                    {String(form.formState.errors.email?.message)}
                   </span>
                 )}
               </div>
@@ -367,7 +367,7 @@ export function CustomerModal({ open, onOpenChange, customer }: CustomerModalPro
                 </div>
                 {form.formState.errors.cep && (
                   <span className="text-sm text-red-500">
-                    {form.formState.errors.cep.message}
+                    {String(form.formState.errors.cep?.message)}
                   </span>
                 )}
               </div>
