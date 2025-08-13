@@ -36,6 +36,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
 
   app.post("/api/auth/login", async (req, res) => {
+    console.log("Received login request:", req.method, req.url, req.body);
     try {
       const { email, password } = req.body;
 
