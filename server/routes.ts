@@ -61,7 +61,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Try to authenticate against database users
       try {
         const user = await storage.getUserByEmail(email);
-        if (user && await bcrypt.compare(password, user.password)) {
+      console.log("Attempting login for user:", email);
+      console.log("Password provided (plain-text):", password);
+      if (user) {
+        console.log("User found in DB. Hashed password from DB:", user.password);
+      }
+      if (user && await bcrypt.compare(password, user.password)) {
           req.session.user = {
             id: user.id,
             email: user.email,
