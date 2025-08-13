@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),

@@ -14,9 +14,9 @@ Create a `.env` file in the root directory with:
 
 ```bash
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-DATABASE_URL=postgresql://username:password@host:port/database
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+POSTGRES_URL=postgresql://username:password@host:port/database
 ```
 
 ### Option B: Using .env.example
@@ -85,7 +85,7 @@ The following tables will be created:
 3. **Reset database**: Use `npx drizzle-kit push` to reset and recreate tables
 
 ### Common Errors
-- **"DATABASE_URL not found"**: Ensure .env file exists and is properly configured
+- **"POSTGRES_URL not found"**: Ensure .env file exists and is properly configured
 - **"SSL required"**: Check if SSL is enabled in your connection string
 - **"Permission denied"**: Verify your Supabase project settings and credentials
 

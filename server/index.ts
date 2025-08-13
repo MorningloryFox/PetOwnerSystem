@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import session from "express-session";
 import pg from "pg";
 import connectPgSimple from "connect-pg-simple";
+import { ensureDatabase } from "./db";
 
 const app = express();
 app.use(express.json());
@@ -16,9 +17,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new PgStore({
-    pg,
-    conString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    conString: process.env.POSTGRES_URL
   }),
   cookie: {
     secure: false, // Set to true in production with HTTPS
@@ -58,6 +57,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  await ensureDatabase();
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

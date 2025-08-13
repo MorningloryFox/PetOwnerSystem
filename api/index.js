@@ -229,12 +229,18 @@ import bcrypt from "bcryptjs";
 // server/db.ts
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-var connectionString = process.env.DATABASE_URL || "postgresql://postgres.mdoalcyygfpblwudtoie:scRJGXtAkKgvFo9t@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
+import path from "path";
+var connectionString = process.env.POSTGRES_URL || "postgresql://postgres.mdoalcyygfpblwudtoie:scRJGXtAkKgvFo9t@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
 var client = postgres(connectionString, {
   ssl: "require",
   max: 1
 });
 var db = drizzle(client, { schema: schema_exports });
+async function ensureDatabase() {
+  const migrationsFolder = path.join(process.cwd(), "migrations");
+  await migrate(db, { migrationsFolder });
+}
 
 // server/storage.ts
 var DatabaseStorage = class {
@@ -942,6 +948,7 @@ var requireAuth = (req, res, next) => {
 };
 async function registerRoutes(app2) {
   app2.post("/api/auth/login", async (req, res) => {
+    console.log("Received login request:", req.method, req.url, req.body);
     try {
       const { email, password } = req.body;
       if (email === "admin") {
@@ -962,6 +969,11 @@ async function registerRoutes(app2) {
       }
       try {
         const user = await storage.getUserByEmail(email);
+        console.log("Attempting login for user:", email);
+        console.log("Password provided (plain-text):", password);
+        if (user) {
+          console.log("User found in DB. Hashed password from DB:", user.password);
+        }
         if (user && await bcrypt2.compare(password, user.password)) {
           req.session.user = {
             id: user.id,
@@ -1676,27 +1688,28 @@ async function registerRoutes(app2) {
 // server/vite.ts
 import express from "express";
 import fs from "fs";
-import path2 from "path";
+import path3 from "path";
 import { createServer as createViteServer, createLogger } from "vite";
 
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
+import path2 from "path";
 var vite_config_default = defineConfig({
   plugins: [
     react()
   ],
+  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets")
+      "@": path2.resolve(import.meta.dirname, "client", "src"),
+      "@shared": path2.resolve(import.meta.dirname, "shared"),
+      "@assets": path2.resolve(import.meta.dirname, "attached_assets")
     }
   },
-  root: path.resolve(import.meta.dirname, "client"),
+  root: path2.resolve(import.meta.dirname, "client"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    outDir: path2.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true
   },
   server: {
@@ -1742,7 +1755,7 @@ async function setupVite(app2, server) {
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     try {
-      const clientTemplate = path2.resolve(
+      const clientTemplate = path3.resolve(
         import.meta.dirname,
         "..",
         "client",
@@ -1762,7 +1775,7 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path2.resolve(import.meta.dirname, "public");
+  const distPath = path3.resolve(import.meta.dirname, "public");
   if (!fs.existsSync(distPath)) {
     throw new Error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -1770,13 +1783,12 @@ function serveStatic(app2) {
   }
   app2.use(express.static(distPath));
   app2.use("*", (_req, res) => {
-    res.sendFile(path2.resolve(distPath, "index.html"));
+    res.sendFile(path3.resolve(distPath, "index.html"));
   });
 }
 
 // server/index.ts
 import session from "express-session";
-import pg from "pg";
 import connectPgSimple from "connect-pg-simple";
 var app = express2();
 app.use(express2.json());
@@ -1787,9 +1799,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new PgStore({
-    pg,
-    conString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    conString: process.env.POSTGRES_URL
   }),
   cookie: {
     secure: false,
@@ -1801,7 +1811,7 @@ app.use(session({
 }));
 app.use((req, res, next) => {
   const start = Date.now();
-  const path3 = req.path;
+  const path4 = req.path;
   let capturedJsonResponse = void 0;
   const originalResJson = res.json;
   res.json = function(bodyJson, ...args) {
@@ -1810,8 +1820,8 @@ app.use((req, res, next) => {
   };
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path3.startsWith("/api")) {
-      let logLine = `${req.method} ${path3} ${res.statusCode} in ${duration}ms`;
+    if (path4.startsWith("/api")) {
+      let logLine = `${req.method} ${path4} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
@@ -1824,6 +1834,7 @@ app.use((req, res, next) => {
   next();
 });
 (async () => {
+  await ensureDatabase();
   const server = await registerRoutes(app);
   app.use((err, _req, res, _next) => {
     const status = err.status || err.statusCode || 500;
@@ -1836,11 +1847,10 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-  const port = parseInt(process.env.PORT || "5000", 10);
+  const port = parseInt(process.env.PORT || "5001", 10);
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true
+    host: "0.0.0.0"
   }, () => {
     log(`serving on port ${port}`);
   });
