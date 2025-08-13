@@ -161,6 +161,8 @@ export const notifications = pgTable("notifications", {
 // Insert schemas
 export const insertCompanySchema = createInsertSchema(companies).omit({ id: true, createdAt: true }) as any;
 
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true, companyId: true }) as any;
+
 export const insertCustomerSchema = createInsertSchema(customers, {
   cep: z.union([
     z.string().regex(/^\d{5}-?\d{3}$/, "CEP deve ter formato 00000-000"),
