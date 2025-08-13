@@ -160,7 +160,7 @@ export const notifications = pgTable("notifications", {
 
 // Insert schemas
 export const insertCompanySchema = createInsertSchema(companies).omit({ id: true, createdAt: true }) as any;
-export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true, lastLoginAt: true, companyId: true }) as any;
+
 export const insertCustomerSchema = createInsertSchema(customers, {
   cep: z.union([
     z.string().regex(/^\d{5}-?\d{3}$/, "CEP deve ter formato 00000-000"),
@@ -174,7 +174,7 @@ export const insertCustomerSchema = createInsertSchema(customers, {
   ]).optional().transform(val => val === "" || val === undefined ? null : val),
 } as any).omit({ id: true, createdAt: true, companyId: true }) as any;
 export const insertPetSchema = createInsertSchema(pets)
-  .omit({ id: true, createdAt: true, updatedAt: true })
+.omit({ id: true, createdAt: true, updatedAt: true })
   .extend({
     customerId: z.string().min(1, "Cliente é obrigatório"),
     weight: z.union([z.number(), z.string().transform(v => parseFloat(v))]).optional(),

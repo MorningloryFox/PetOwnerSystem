@@ -8,6 +8,7 @@ import {
   companies, users, customers, pets, services, packageTypes, packageTypeServices, customerPackages, 
   customerPackageServices, packageUsages, appointments, notifications
 } from "@shared/schema";
+
 import { eq, and, gte, lte, desc, count, sql, sum, asc } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { db } from "./db";
