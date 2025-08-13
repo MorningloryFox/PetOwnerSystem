@@ -20,7 +20,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new PgStore({
-      conString: process.env.POSTGRES_URL,
+      conString: process.env.DATABASE_URL,
     }),
     cookie: {
       secure: false, // set to true in production with HTTPS

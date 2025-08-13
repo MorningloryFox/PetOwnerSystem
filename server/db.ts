@@ -5,7 +5,10 @@ import path from 'path';
 import * as schema from "@shared/schema";
 
 // Use Supabase PostgreSQL connection
-const connectionString = process.env.POSTGRES_URL || "postgresql://postgres.mdoalcyygfpblwudtoie:scRJGXtAkKgvFo9t@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not set");
+}
 
 const client = postgres(connectionString, {
   ssl: 'require',

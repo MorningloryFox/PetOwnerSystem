@@ -19,7 +19,7 @@ async function testSupabaseConnection() {
     console.log('\n📋 Environment Variables Check:');
     console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Set' : '❌ Missing');
     console.log('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing');
-    console.log('POSTGRES_URL:', process.env.POSTGRES_URL ? '✅ Set' : '❌ Missing');
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Missing');
 
     // Test 2: Test Supabase client connection
     console.log('\n🔗 Testing Supabase Client Connection...');
@@ -37,7 +37,10 @@ async function testSupabaseConnection() {
 
     // Test 3: Test database connection
     console.log('\n🗄️ Testing Database Connection...');
-    const connectionString = process.env.POSTGRES_URL || "postgresql://postgres.mdoalcyygfpblwudtoie:scRJGXtAkKgvFo9t@aws-1-sa-east-1.pooler.supabase.com:6543/postgres";
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error('DATABASE_URL is not set');
+    }
     
     const client = postgres(connectionString, {
       ssl: 'require',

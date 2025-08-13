@@ -12,12 +12,12 @@ console.log('🔧 Setting up environment variables...');
 const envExample = `# Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-POSTGRES_URL=your_database_url_here
+DATABASE_URL=your_database_url_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 SUPABASE_JWT_SECRET=your_jwt_secret_here
 
 # Optional: Additional configuration
-POSTGRES_URL_NON_POOLING=
+DATABASE_URL_NON_POOLING=
 `;
 
 // Check if .env file exists
@@ -36,7 +36,7 @@ if (!existsSync(envPath)) {
 console.log('\n📊 Current configuration:');
 console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Set' : '❌ Missing');
 console.log('Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing');
-console.log('Database URL:', process.env.POSTGRES_URL ? '✅ Set' : '❌ Missing');
+console.log('Database URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Missing');
 
 // Instructions
 console.log('\n📖 Instructions:');
