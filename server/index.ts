@@ -5,6 +5,8 @@ import session from "express-session";
 import pg from "pg";
 import connectPgSimple from "connect-pg-simple";
 import { ensureDatabase } from "./db";
+import { storage } from "./storage";
+import bcrypt from "bcryptjs";
 
 const app = express();
 app.use(express.json());
@@ -56,8 +58,45 @@ app.use((req, res, next) => {
   next();
 });
 
+async function ensureAdminUser() {
+  const adminEmail = 'admin';
+  const adminPassword = 'admin';
+  const companyId = '550e8400-e29b-41d4-a716-446655440000';
+
+  const existingAdmin = await storage.getUserByEmail(adminEmail, companyId);
+  if (existingAdmin) return;
+
+  const company = await storage.getCompany(companyId);
+  if (!company) {
+    await storage.createCompany({
+      id: companyId,
+      name: 'Gloss Pet',
+      email: 'admin@glosspet.com',
+      phone: '(11) 9999-9999',
+      address: 'São Paulo, SP',
+      logo: 'https://via.placeholder.com/150',
+      isActive: true,
+      createdAt: new Date(),
+    });
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
+  await storage.createUser({
+    email: adminEmail,
+    password: hashedPassword,
+    name: 'Administrador',
+    role: 'admin',
+    companyId,
+    isActive: true,
+    lastLoginAt: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+}
+
 (async () => {
   await ensureDatabase();
+  await ensureAdminUser();
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

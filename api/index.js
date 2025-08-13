@@ -1790,6 +1790,7 @@ function serveStatic(app2) {
 // server/index.ts
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
+import bcrypt3 from "bcryptjs";
 var app = express2();
 app.use(express2.json());
 app.use(express2.urlencoded({ extended: false }));
@@ -1833,8 +1834,41 @@ app.use((req, res, next) => {
   });
   next();
 });
+async function ensureAdminUser() {
+  const adminEmail = "admin";
+  const adminPassword = "admin";
+  const companyId = "550e8400-e29b-41d4-a716-446655440000";
+  const existingAdmin = await storage.getUserByEmail(adminEmail, companyId);
+  if (existingAdmin) return;
+  const company = await storage.getCompany(companyId);
+  if (!company) {
+    await storage.createCompany({
+      id: companyId,
+      name: "Gloss Pet",
+      email: "admin@glosspet.com",
+      phone: "(11) 9999-9999",
+      address: "S\xE3o Paulo, SP",
+      logo: "https://via.placeholder.com/150",
+      isActive: true,
+      createdAt: /* @__PURE__ */ new Date()
+    });
+  }
+  const hashedPassword = await bcrypt3.hash(adminPassword, 10);
+  await storage.createUser({
+    email: adminEmail,
+    password: hashedPassword,
+    name: "Administrador",
+    role: "admin",
+    companyId,
+    isActive: true,
+    lastLoginAt: null,
+    createdAt: /* @__PURE__ */ new Date(),
+    updatedAt: /* @__PURE__ */ new Date()
+  });
+}
 (async () => {
   await ensureDatabase();
+  await ensureAdminUser();
   const server = await registerRoutes(app);
   app.use((err, _req, res, _next) => {
     const status = err.status || err.statusCode || 500;
