@@ -7,3 +7,4 @@ vite.config.ts.*
 
 # compiled serverless output
 api/index.js
+.vercel
