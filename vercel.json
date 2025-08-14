@@ -4,6 +4,13 @@
     {
       "src": "api/index.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "client/dist"
+      }
     }
   ],
   "routes": [
@@ -12,8 +19,16 @@
       "dest": "/api/index.ts"
     },
     {
+      "src": "/favicon.ico",
+      "dest": "/client/public/favicon.ico"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/client/dist/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/client/dist/$1"
     }
   ]
 }
