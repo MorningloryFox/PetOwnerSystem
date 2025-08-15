@@ -56,27 +56,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Try to authenticate against database users
-      try {
-        const user = await storage.getUserByEmail(email);
-        if (user && await bcrypt.compare(password, user.password)) {
-          req.session.user = {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            companyId: user.companyId,
-            company: {
-              id: user.companyId,
-              name: user.company?.name || 'Gloss Pet',
-            },
-          };
-          
-          res.json(req.session.user);
-          return;
-        }
-      } catch (dbError) {
-        console.error('Database authentication error:', dbError);
+      const user = await storage.getUserByEmail(email);
+      if (user && await bcrypt.compare(password, user.password)) {
+        req.session.user = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          companyId: user.companyId,
+          company: {
+            id: user.companyId,
+            name: user.company?.name || 'Gloss Pet',
+          },
+        };
+        
+        res.json(req.session.user);
+        return;
       }
 
       return res.status(401).json({ error: 'Usuário ou senha incorretos' });
