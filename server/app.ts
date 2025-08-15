@@ -8,6 +8,8 @@ import { storage } from "./storage";
 import { registerRoutes } from "./routes";
 import { log } from "./vite";
 
+console.log("POSTGRES_URL:", process.env.POSTGRES_URL ? "Loaded" : "Not Loaded");
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,7 +25,7 @@ app.use(
       conString: process.env.POSTGRES_URL,
     }),
     cookie: {
-      secure: false, // set to true in production with HTTPS
+      secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
     },
