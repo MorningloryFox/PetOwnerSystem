@@ -179,6 +179,7 @@ npm run dev
 ### Credenciais de Acesso
 - **Usuário**: admin
 - **Senha**: admin
+⚠️ A senha é armazenada em formato hash; não substitua manualmente no banco.
 
 ## 📊 Dados da Empresa Piloto
 

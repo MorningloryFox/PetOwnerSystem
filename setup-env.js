@@ -10,12 +10,14 @@ config();
 console.log('🔧 Setting up environment variables...');
 
 const envExample = `# Supabase Configuration
-VITE_SUPABASE_URL=your_supabase_url_here
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 DATABASE_URL=your_database_url_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+SUPABASE_JWT_SECRET=your_jwt_secret_here
 
 # Optional: Additional configuration
-VITE_API_URL=http://localhost:3000
+DATABASE_URL_NON_POOLING=
 `;
 
 // Check if .env file exists
@@ -32,8 +34,8 @@ if (!existsSync(envPath)) {
 
 // Display current configuration
 console.log('\n📊 Current configuration:');
-console.log('Supabase URL:', process.env.VITE_SUPABASE_URL ? '✅ Set' : '❌ Missing');
-console.log('Supabase Key:', process.env.VITE_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing');
+console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Set' : '❌ Missing');
+console.log('Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing');
 console.log('Database URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Missing');
 
 // Instructions

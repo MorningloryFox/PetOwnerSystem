@@ -4,7 +4,6 @@ import { storage, DatabaseStorage } from "./storage";
 import { insertCustomerSchema, insertPetSchema, insertPackageUsageSchema, insertAppointmentSchema, insertCustomerPackageSchema, insertCompanySchema, insertUserSchema } from "@shared/schema";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import session from "express-session";
 
 // Extend session to include user
 declare module 'express-session' {
@@ -36,7 +35,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
 
   app.post("/api/auth/login", async (req, res) => {
-    console.log("Received login request:", req.method, req.url, req.body);
     try {
       const { email, password } = req.body;
 
@@ -61,12 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Try to authenticate against database users
       try {
         const user = await storage.getUserByEmail(email);
-      console.log("Attempting login for user:", email);
-      console.log("Password provided (plain-text):", password);
-      if (user) {
-        console.log("User found in DB. Hashed password from DB:", user.password);
-      }
-      if (user && await bcrypt.compare(password, user.password)) {
+        if (user && await bcrypt.compare(password, user.password)) {
           req.session.user = {
             id: user.id,
             email: user.email,
@@ -85,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (dbError) {
         console.error('Database authentication error:', dbError);
       }
-      
+
       return res.status(401).json({ error: 'Usuário ou senha incorretos' });
     } catch (error) {
       console.error('Login error:', error);
