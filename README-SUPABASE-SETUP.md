@@ -14,8 +14,8 @@ Create a `.env` file in the root directory with:
 
 ```bash
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 DATABASE_URL=postgresql://username:password@host:port/database
 ```
 

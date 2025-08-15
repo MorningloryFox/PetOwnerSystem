@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  envPrefix: ["VITE_", "NEXT_PUBLIC_"],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -22,6 +23,13 @@ export default defineConfig({
     fs: {
       strict: true,
       deny: ["**/.*"],
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });
