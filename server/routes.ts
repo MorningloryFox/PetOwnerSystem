@@ -68,7 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             companyId: user.companyId,
             company: {
               id: user.companyId,
-              name: 'Gloss Pet', // Could fetch from companies table
+              name: user.company?.name || 'Gloss Pet',
             },
           };
           
