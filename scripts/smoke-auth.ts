@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 async function main() {
   const base = process.env.BASE_URL || 'http://localhost:3000'
 

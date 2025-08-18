@@ -18,11 +18,10 @@ export async function POST(req: Request) {
     if (error) {
       console.error('[auth/login] signIn error:', error)
       const msg = (error.message || '').toLowerCase()
-      const status = msg.includes('confirm') ? 401 : 400
-      const message = msg.includes('confirm') ? 'Email não confirmado' : error.message
-      return NextResponse.json({ error: message }, { status })
+      const code = msg.includes('confirm') ? 401 : 400
+      return NextResponse.json({ error: error.message }, { status: code })
     }
-    return NextResponse.json({ user: data.user, session: data.session })
+    return NextResponse.json({ user: data.user, session: data.session }, { status: 200 })
   } catch (e: any) {
     console.error('[auth/login] 500:', e)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })

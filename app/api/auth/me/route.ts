@@ -18,7 +18,7 @@ export async function GET(req: Request) {
       console.error('[auth/me] getUser error:', error)
       return NextResponse.json({ error: error.message }, { status: 401 })
     }
-    return NextResponse.json({ user })
+    return NextResponse.json({ user }, { status: 200 })
   } catch (e: any) {
     console.error('[auth/me] 500:', e)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
