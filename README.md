@@ -247,3 +247,4 @@ Para executar o teste de fumaça das rotas de autenticação:
 ```bash
 BASE_URL=http://localhost:3000 TEST_USER=<email> TEST_PASS=<senha> node scripts/smoke-auth.ts
 ```
+

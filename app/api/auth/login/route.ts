@@ -4,27 +4,24 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseServer = () =>
-  createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-  )
+const supabase = () =>
+  createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
 
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json()
-    const supabase = supabaseServer()
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 })
+    }
+
+    const { data, error } = await supabase().auth.signInWithPassword({ email, password })
     if (error) {
-      console.error('[auth/login] signIn error:', error)
-      const msg = error.message || ''
-      if (msg.toLowerCase().includes('confirm')) {
-        return NextResponse.json({ error: 'Email não confirmado' }, { status: 401 })
-      }
-      return NextResponse.json({ error: msg }, { status: 400 })
+      const msg = (error.message || '').toLowerCase()
+      const code = msg.includes('confirm') ? 401 : 400
+      return NextResponse.json({ error: error.message }, { status: code })
     }
     return NextResponse.json({ user: data.user, session: data.session })
-  } catch (e:any) {
+  } catch (e: any) {
     console.error('[auth/login] 500:', e)
     return NextResponse.json({ error: 'Internal error' }, { status: 500 })
   }

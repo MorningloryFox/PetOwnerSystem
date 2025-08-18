@@ -4,9 +4,10 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env PORT=5002 NODE_ENV=development tsx server/index.ts",
-    "build": "vite build && esbuild api/index.ts --platform=node --packages=external --bundle --format=esm --outfile=api/index.js",
-    "start": "NODE_ENV=production node dist/index.js",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
     "check": "tsc"
   },
   "dependencies": {
