@@ -233,3 +233,17 @@ Para suporte técnico ou dúvidas sobre o sistema:
 
 **PetManager Pro** - Transformando a gestão de pet shops no Brasil
 *Versão 1.0 - Desenvolvido especificamente para Gloss Pet*
+
+## 🔍 Testes Rápidos de Autenticação
+
+Para verificar a presença das variáveis de ambiente principais:
+
+```bash
+node -r dotenv/config scripts/env-check.ts dotenv_config_path=.env.local
+```
+
+Para executar o teste de fumaça das rotas de autenticação:
+
+```bash
+BASE_URL=http://localhost:3000 TEST_USER=<email> TEST_PASS=<senha> node scripts/smoke-auth.ts
+```
