@@ -14,7 +14,10 @@ export async function GET(req: Request) {
       global: { headers: { Authorization: `Bearer ${token}` } },
     })
     const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) return NextResponse.json({ error: error.message }, { status: 401 })
+    if (error) {
+      console.error('[auth/me] getUser error:', error)
+      return NextResponse.json({ error: error.message }, { status: 401 })
+    }
     return NextResponse.json({ user })
   } catch (e: any) {
     console.error('[auth/me] 500:', e)
