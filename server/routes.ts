@@ -56,7 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      const user = await storage.getUserByEmail(email);
+      const user: any = await storage.getUserByEmail(email);
       if (user && await bcrypt.compare(password, user.password)) {
         req.session.user = {
           id: user.id,

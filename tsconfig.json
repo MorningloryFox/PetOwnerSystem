@@ -1,6 +1,18 @@
 {
   "include": ["client/src/**/*", "shared/**/*", "server/**/*", "app/**/*", "scripts/**/*"],
-  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "**/*.test.ts",
+    "server/seed-final.ts",
+    "server/seed.ts",
+    "server/seed-simple.ts",
+    "server/seed-simple-esm.ts",
+    "server/seed-new.ts",
+    "server/seed-*.ts",
+    "server/routes.ts"
+  ],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
