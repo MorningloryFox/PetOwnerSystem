@@ -10,14 +10,14 @@ export async function GET(req: Request) {
     const token = auth.startsWith('Bearer ') ? auth.slice(7) : undefined
     if (!token) return NextResponse.json({ error: 'No token' }, { status: 401 })
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-    })
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    )
+
     const { data: { user }, error } = await supabase.auth.getUser()
-    if (error) {
-      console.error('[auth/me] getUser error:', error)
-      return NextResponse.json({ error: error.message }, { status: 401 })
-    }
+    if (error) return NextResponse.json({ error: error.message }, { status: 401 })
     return NextResponse.json({ user }, { status: 200 })
   } catch (e: any) {
     console.error('[auth/me] 500:', e)
