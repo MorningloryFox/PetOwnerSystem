@@ -4,9 +4,16 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
+<<<<<<< HEAD
     "dev": "cross-env PORT=5002 NODE_ENV=development tsx server/index.ts",
     "build": "vite build && cp api/index.ts api/index.js",
     "start": "NODE_ENV=production node dist/index.js",
+=======
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+>>>>>>> 1ba07b39a62e291a5029388d5f464c5b05920c12
     "check": "tsc"
   },
   "dependencies": {
@@ -41,6 +48,8 @@
     "@radix-ui/react-tooltip": "^1.2.0",
     "@sendgrid/mail": "^8.1.5",
     "@supabase/supabase-js": "^2.0.0",
+    "@supabase/ssr": "^0.0.8",
+    "next": "^15.4.6",
     "@tanstack/react-query": "^5.60.5",
     "@types/bcryptjs": "^2.4.6",
     "@types/memoizee": "^0.4.12",
@@ -82,6 +91,7 @@
     "ws": "^8.18.0",
     "zod": "^3.24.2",
     "zod-validation-error": "^3.4.0",
+    "node-fetch": "^3.3.2",
     "@vitejs/plugin-react": "^4.3.2",
     "esbuild": "^0.25.0",
     "vite": "^5.4.19",
