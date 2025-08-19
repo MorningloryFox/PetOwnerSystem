@@ -38,6 +38,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
 
+      // Validate input
+      if (!email || !password) {
+        return res.status(400).json({ 
+          error: 'Campos obrigatórios faltando',
+          details: 'Email e senha são obrigatórios' 
+        });
+      }
+
       // Ensure admin user exists
       if (email === 'admin') {
         let adminUser = await storage.getUserByEmail('admin');
@@ -57,27 +65,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const user = await storage.getUserByEmail(email);
-      if (user && await bcrypt.compare(password, user.password)) {
-        req.session.user = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          companyId: user.companyId,
-          company: {
-            id: user.companyId,
-            name: user.company?.name || 'Gloss Pet',
-          },
-        };
-        
-        res.json(req.session.user);
-        return;
+      if (!user) {
+        return res.status(401).json({ 
+          error: 'Usuário ou senha incorretos',
+          details: 'Verifique suas credenciais e tente novamente' 
+        });
       }
 
-      return res.status(401).json({ error: 'Usuário ou senha incorretos' });
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ 
+          error: 'Usuário ou senha incorretos',
+          details: 'Verifique suas credenciais e tente novamente' 
+        });
+      }
+
+      // Update last login
+      await storage.updateUserLastLogin(user.id);
+
+      // Set session
+      req.session.user = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        companyId: user.companyId,
+        company: {
+          id: user.companyId,
+          name: 'Gloss Pet', // Default company name
+        },
+      };
+      
+      console.log('✅ Login successful for user:', email);
+      res.json(req.session.user);
     } catch (error) {
-      console.error('Login error:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error('❌ Login error:', error);
+      res.status(500).json({ 
+        error: 'Erro interno do servidor',
+        details: 'Não foi possível processar o login. Tente novamente mais tarde.'
+      });
     }
   });
 
@@ -97,6 +123,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json({ message: 'Logout realizado com sucesso' });
     });
+  });
+
+  // Health check endpoint
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Test database connection
+      await storage.getDashboardMetrics();
+      
+      res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        database: 'connected',
+        session: req.session ? 'active' : 'inactive'
+      });
+    } catch (error) {
+      console.error('❌ Health check failed:', error);
+      res.status(503).json({
+        status: 'unhealthy',
+        timestamp: new Date().toISOString(),
+        database: 'disconnected',
+        error: 'Database connection failed'
+      });
+    }
   });
   
   // Dashboard routes (protected)
