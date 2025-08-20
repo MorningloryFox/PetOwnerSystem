@@ -4,17 +4,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-<<<<<<< HEAD
     "dev": "cross-env PORT=5002 NODE_ENV=development tsx server/index.ts",
-    "build": "vite build && cp api/index.ts api/index.js",
-    "start": "NODE_ENV=production node dist/index.js",
-=======
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p 3000",
-    "lint": "next lint",
->>>>>>> 1ba07b39a62e291a5029388d5f464c5b05920c12
-    "check": "tsc"
+    "build": "vite build",
+    "start": "NODE_ENV=production node api/index.js",
+    "check": "tsc",
+    "test:connection": "tsx test-supabase-connection.js",
+    "migrate": "drizzle-kit push",
+    "verify:deployment": "tsx verify-deployment.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

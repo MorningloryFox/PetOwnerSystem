@@ -33,19 +33,19 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid={testId}>
-      <CardContent className="p-6">
+      <CardContent className="p-3 sm:p-6">
         <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-gray-600">{title}</p>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">{title}</p>
               {description && <InfoTooltip content={description} />}
             </div>
-            <p className="text-3xl font-bold text-gray-900" data-testid={`${testId}-value`}>
+            <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-1" data-testid={`${testId}-value`}>
               {value}
             </p>
           </div>
-          <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", colorClasses[color])}>
-            <Icon className="w-6 h-6" />
+          <div className={cn("w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0 ml-2", colorClasses[color])}>
+            <Icon className="w-4 h-4 sm:w-6 sm:h-6" />
           </div>
         </div>
         

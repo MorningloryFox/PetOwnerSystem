@@ -7,6 +7,9 @@ export default defineConfig({
     react(),
   ],
   envPrefix: ["VITE_", "NEXT_PUBLIC_"],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),

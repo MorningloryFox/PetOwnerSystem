@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -188,6 +188,12 @@ export function PackageModal({ open, onOpenChange, editingPackage }: PackageModa
             <Package className="w-5 h-5" />
             {isEditing ? "Editar Pacote de Serviços" : "Novo Pacote de Serviços"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing
+              ? "Modifique as informações do pacote de serviços."
+              : "Crie um novo pacote de serviços combinando diferentes serviços com preços especiais."
+            }
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit, (errors) => {

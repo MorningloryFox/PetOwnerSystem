@@ -63,32 +63,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-      
-<<<<<<< HEAD
+
       const user = await storage.getUserByEmail(email);
       if (!user) {
-        return res.status(401).json({ 
+        return res.status(401).json({
           error: 'Usuário ou senha incorretos',
-          details: 'Verifique suas credenciais e tente novamente' 
+          details: 'Verifique suas credenciais e tente novamente'
         });
-=======
-      const user: any = await storage.getUserByEmail(email);
-      if (user && await bcrypt.compare(password, user.password)) {
-        req.session.user = {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          companyId: user.companyId,
-          company: {
-            id: user.companyId,
-            name: user.company?.name || 'Gloss Pet',
-          },
-        };
-        
-        res.json(req.session.user);
-        return;
->>>>>>> 1ba07b39a62e291a5029388d5f464c5b05920c12
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);

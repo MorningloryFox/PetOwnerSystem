@@ -45,25 +45,49 @@ export function Header() {
             </button>
 
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">PetManager Pro</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">PetManager Pro</h1>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <Button 
-                className="bg-primary hover:bg-primary/90"
-                onClick={() => setShowCustomerModal(true)}
-                data-testid="button-new-customer"
-              >
-                Novo Cliente
-              </Button>
-              
-              <Button 
-                className="bg-success hover:bg-success/90 text-success-foreground"
-                onClick={() => setShowPackageModal(true)}
-                data-testid="button-new-package"
-              >
-                Novo Pacote
-              </Button>
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Desktop Buttons */}
+              <div className="hidden sm:flex items-center space-x-4">
+                <Button
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => setShowCustomerModal(true)}
+                  data-testid="button-new-customer"
+                >
+                  Novo Cliente
+                </Button>
+
+                <Button
+                  className="bg-success hover:bg-success/90 text-success-foreground"
+                  onClick={() => setShowPackageModal(true)}
+                  data-testid="button-new-package"
+                >
+                  Novo Pacote
+                </Button>
+              </div>
+
+              {/* Mobile Compact Buttons */}
+              <div className="flex sm:hidden items-center space-x-1">
+                <Button
+                  size="sm"
+                  className="bg-primary hover:bg-primary/90 text-xs px-2"
+                  onClick={() => setShowCustomerModal(true)}
+                  data-testid="button-new-customer-mobile"
+                >
+                  Cliente
+                </Button>
+
+                <Button
+                  size="sm"
+                  className="bg-success hover:bg-success/90 text-success-foreground text-xs px-2"
+                  onClick={() => setShowPackageModal(true)}
+                  data-testid="button-new-package-mobile"
+                >
+                  Pacote
+                </Button>
+              </div>
               
               {/* Notifications */}
               <button 

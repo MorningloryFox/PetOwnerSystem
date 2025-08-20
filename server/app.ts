@@ -22,7 +22,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new PgStore({
-      conString: process.env.POSTGRES_URL,
+      conString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",

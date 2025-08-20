@@ -2,30 +2,58 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.ts",
-      "use": "@vercel/node"
-    },
-    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
         "buildCommand": "npm run build",
         "outputDirectory": "dist"
       }
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.ts"
+      "dest": "/api/index.js"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/dist/assets/$1"
+      "src": "/customers",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/services",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/packages",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/appointments",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/users",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/pets",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/package-types",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/customer-packages",
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/index.html"
+      "dest": "/dist/$1"
     }
   ]
 }

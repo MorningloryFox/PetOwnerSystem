@@ -101,7 +101,7 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "admin",
-      password: "admin",
+      password: "admin123",
     },
   });
 
@@ -233,7 +233,7 @@ export default function Login() {
                           ? "border-red-500 focus:ring-red-200" 
                           : "focus:ring-blue-200 focus:border-blue-400"
                       }`}
-                      placeholder="Digite: admin"
+                      placeholder="Digite: admin123"
                     />
                     <Button
                       type="button"

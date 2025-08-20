@@ -58,6 +58,12 @@ export function useAuth() {
     const response = await apiRequest('/api/auth/login', 'POST', { email, password });
     const userData = await response.json();
     console.log("Login response:", userData);
+
+    // Store token if provided
+    if (userData.token) {
+      localStorage.setItem('auth-token', userData.token);
+    }
+
     authState.user = userData;
     notifyCallbacks();
     return userData;

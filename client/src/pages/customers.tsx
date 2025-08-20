@@ -105,28 +105,55 @@ export default function Customers() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Gestão de Clientes & Pets</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestão de Clientes & Pets</h1>
           <p className="text-gray-600 mt-2">Gerencie clientes, pets e relacionamentos</p>
         </div>
         <div className="flex gap-2">
-          <Button 
-            onClick={() => setIsNewCustomerOpen(true)} 
-            data-testid="button-new-customer"
-            variant={activeTab === "customers" ? "default" : "outline"}
-          >
-            <User className="w-4 h-4 mr-2" />
-            Novo Cliente
-          </Button>
-          <Button 
-            onClick={() => setIsNewPetOpen(true)} 
-            data-testid="button-new-pet"
-            variant={activeTab === "pets" ? "default" : "outline"}
-          >
-            <PawPrint className="w-4 h-4 mr-2" />
-            Novo Pet
-          </Button>
+          {/* Desktop Buttons */}
+          <div className="hidden sm:flex gap-2">
+            <Button
+              onClick={() => setIsNewCustomerOpen(true)}
+              data-testid="button-new-customer"
+              variant={activeTab === "customers" ? "default" : "outline"}
+            >
+              <User className="w-4 h-4 mr-2" />
+              Novo Cliente
+            </Button>
+            <Button
+              onClick={() => setIsNewPetOpen(true)}
+              data-testid="button-new-pet"
+              variant={activeTab === "pets" ? "default" : "outline"}
+            >
+              <PawPrint className="w-4 h-4 mr-2" />
+              Novo Pet
+            </Button>
+          </div>
+
+          {/* Mobile Compact Buttons */}
+          <div className="flex sm:hidden gap-2 w-full">
+            <Button
+              onClick={() => setIsNewCustomerOpen(true)}
+              data-testid="button-new-customer-mobile"
+              variant={activeTab === "customers" ? "default" : "outline"}
+              size="sm"
+              className="flex-1"
+            >
+              <User className="w-4 h-4 mr-1" />
+              Cliente
+            </Button>
+            <Button
+              onClick={() => setIsNewPetOpen(true)}
+              data-testid="button-new-pet-mobile"
+              variant={activeTab === "pets" ? "default" : "outline"}
+              size="sm"
+              className="flex-1"
+            >
+              <PawPrint className="w-4 h-4 mr-1" />
+              Pet
+            </Button>
+          </div>
         </div>
       </div>
 

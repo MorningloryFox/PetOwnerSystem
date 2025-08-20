@@ -2,7 +2,15 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
+    let text;
+    try {
+      // Try to parse as JSON first (for API errors)
+      const json = await res.json();
+      text = JSON.stringify(json);
+    } catch {
+      // Fallback to text if not JSON
+      text = (await res.text()) || res.statusText;
+    }
     throw new Error(`${res.status}: ${text}`);
   }
 }
@@ -12,9 +20,20 @@ export async function apiRequest(
   method: string = "GET",
   data?: unknown | undefined,
 ): Promise<Response> {
+  const token = localStorage.getItem('auth-token');
+  const headers: Record<string, string> = {};
+
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
